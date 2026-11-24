@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import ua.edu.chnu.kkn.quotely.domain.auth.validation.ValidationError
 import ua.edu.chnu.kkn.quotely.resources.Res
@@ -56,6 +58,7 @@ import ua.edu.chnu.kkn.quotely.resources.ic_lock
 import ua.edu.chnu.kkn.quotely.resources.ic_person
 import ua.edu.chnu.kkn.quotely.resources.ic_visibility
 import ua.edu.chnu.kkn.quotely.resources.ic_visibility_off
+import ua.edu.chnu.kkn.quotely.resources.login_demo_hint
 import ua.edu.chnu.kkn.quotely.resources.login_hide_password
 import ua.edu.chnu.kkn.quotely.resources.login_password
 import ua.edu.chnu.kkn.quotely.resources.login_show_password
@@ -72,6 +75,7 @@ import ua.edu.chnu.kkn.quotely.resources.validation_username_invalid
 import ua.edu.chnu.kkn.quotely.resources.validation_username_too_long
 import ua.edu.chnu.kkn.quotely.resources.validation_username_too_short
 import ua.edu.chnu.kkn.quotely.ui.common.ObserveEvents
+import ua.edu.chnu.kkn.quotely.ui.common.message
 import ua.edu.chnu.kkn.quotely.ui.components.LanguageSwitcher
 
 /** Wires [LoginScreen] to its [LoginViewModel]. */
@@ -85,11 +89,16 @@ fun LoginRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val focusRequesters = remember { LoginFocusRequesters() }
+    val coroutineScope = rememberCoroutineScope()
 
     ObserveEvents(viewModel.events) { event ->
         when (event) {
             is LoginEvent.FocusField -> focusRequesters[event.field].requestFocus()
             LoginEvent.NavigateToHome -> onSignedIn()
+            is LoginEvent.ShowError -> coroutineScope.launch {
+                snackbarHostState.currentSnackbarData?.dismiss()
+                snackbarHostState.showSnackbar(event.error.message())
+            }
         }
     }
 
@@ -272,6 +281,13 @@ internal fun LoginForm(
                 Text(stringResource(Res.string.login_sign_in))
             }
         }
+        Text(
+            text = stringResource(Res.string.login_demo_hint),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 

@@ -9,6 +9,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import ua.edu.chnu.kkn.quotely.domain.auth.IsAuthorizedUseCase
+import ua.edu.chnu.kkn.quotely.domain.auth.ObserveSessionExpiredUseCase
 import ua.edu.chnu.kkn.quotely.domain.onboarding.IsOnboardingCompletedUseCase
 import ua.edu.chnu.kkn.quotely.domain.onboarding.ResetOnboardingUseCase
 import ua.edu.chnu.kkn.quotely.domain.settings.AppPreferences
@@ -20,28 +23,41 @@ import ua.edu.chnu.kkn.quotely.ui.navigation.Route
 private val log = Logger.withTag("Main")
 
 /**
- * ViewModel of the root ("main") screen: picks the start destination depending on whether
- * the onboarding was passed, owns the Navigation 3 back stack and the app-wide preferences.
+ * ViewModel of the root ("main") screen: picks the start destination from the onboarding flag and
+ * the stored session, owns the Navigation 3 back stack and the app-wide preferences.
  */
 class MainViewModel(
-    isOnboardingCompleted: IsOnboardingCompletedUseCase,
+    private val isOnboardingCompleted: IsOnboardingCompletedUseCase,
+    private val isAuthorized: IsAuthorizedUseCase,
+    observeSessionExpired: ObserveSessionExpiredUseCase,
     observePreferences: ObservePreferencesUseCase,
     private val changeLanguage: ChangeLanguageUseCase,
     private val changeThemeMode: ChangeThemeModeUseCase,
     private val resetOnboarding: ResetOnboardingUseCase,
 ) : ViewModel() {
 
-    /** Kept in the ViewModel so it survives configuration changes and in-app language switches. */
-    val backStack: SnapshotStateList<Route> = mutableStateListOf(
-        if (isOnboardingCompleted()) Route.Login else Route.Onboarding
-    )
+    /**
+     * Kept in the ViewModel so it survives configuration changes and in-app language switches.
+     * Empty until the start destination is known (reading the secure storage is asynchronous).
+     */
+    val backStack: SnapshotStateList<Route> = mutableStateListOf()
 
     val state: StateFlow<MainState> = observePreferences()
         .map { it.toState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, observePreferences().value.toState())
 
     init {
-        log.i { "Start destination: ${backStack.first()}" }
+        viewModelScope.launch {
+            val start = destinationAfterOnboarding().takeIf { isOnboardingCompleted() } ?: Route.Onboarding
+            log.i { "Start destination: $start" }
+            replaceBackStack(start)
+        }
+        viewModelScope.launch {
+            observeSessionExpired().collect {
+                log.w { "Session expired" }
+                replaceBackStack(Route.Login)
+            }
+        }
     }
 
     fun onAction(action: MainAction) {
@@ -54,8 +70,10 @@ class MainViewModel(
                 log.i { "Theme changed: ${state.value.themeMode} -> ${action.mode}" }
                 changeThemeMode(action.mode)
             }
-            MainAction.OnboardingFinished -> replaceBackStack(Route.Login)
+            // A signed-in user who replays the onboarding goes straight back home
+            MainAction.OnboardingFinished -> viewModelScope.launch { replaceBackStack(destinationAfterOnboarding()) }
             MainAction.SignedIn -> replaceBackStack(Route.Home)
+            MainAction.SignedOut -> replaceBackStack(Route.Login)
             MainAction.ShowOnboardingAgain -> {
                 log.i { "Onboarding requested again" }
                 resetOnboarding()
@@ -65,11 +83,12 @@ class MainViewModel(
         }
     }
 
+    private suspend fun destinationAfterOnboarding(): Route = if (isAuthorized()) Route.Home else Route.Login
+
     /** Opens [route] as the new root, so "back" does not return to the previous flow. */
     private fun replaceBackStack(route: Route) {
-        log.d { "Navigate: ${backStack.lastOrNull()} -> $route" }
         if (backStack.singleOrNull() == route) return
-        // Both changes land in one snapshot, NavDisplay never sees an empty back stack
+        log.d { "Navigate: ${backStack.lastOrNull()} -> $route" }
         backStack.clear()
         backStack.add(route)
     }

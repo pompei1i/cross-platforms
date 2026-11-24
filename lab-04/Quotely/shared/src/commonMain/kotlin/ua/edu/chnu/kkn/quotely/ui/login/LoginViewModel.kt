@@ -1,6 +1,7 @@
 package ua.edu.chnu.kkn.quotely.ui.login
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import co.touchlab.kermit.Logger
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -9,14 +10,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import ua.edu.chnu.kkn.quotely.domain.auth.LoginUseCase
 import ua.edu.chnu.kkn.quotely.domain.auth.validation.ValidatePasswordUseCase
 import ua.edu.chnu.kkn.quotely.domain.auth.validation.ValidateUsernameUseCase
+import ua.edu.chnu.kkn.quotely.domain.common.onFailure
+import ua.edu.chnu.kkn.quotely.domain.common.onSuccess
 
 private val log = Logger.withTag("Login")
 
 class LoginViewModel(
     private val validateUsername: ValidateUsernameUseCase,
     private val validatePassword: ValidatePasswordUseCase,
+    private val login: LoginUseCase,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
@@ -56,10 +62,23 @@ class LoginViewModel(
         when {
             usernameError != null -> _events.trySend(LoginEvent.FocusField(LoginField.Username))
             passwordError != null -> _events.trySend(LoginEvent.FocusField(LoginField.Password))
-            else -> {
-                log.i { "Credentials are valid for '${current.username.trim()}'" }
-                _events.trySend(LoginEvent.NavigateToHome)
-            }
+            else -> authorize(current.username, current.password)
+        }
+    }
+
+    private fun authorize(username: String, password: String) {
+        _state.update { it.copy(isLoading = true) }
+        viewModelScope.launch {
+            login(username, password)
+                .onSuccess { user ->
+                    log.i { "Welcome, ${user.username}" }
+                    _events.send(LoginEvent.NavigateToHome)
+                }
+                .onFailure { error ->
+                    log.w { "Sign-in failed: $error" }
+                    _events.send(LoginEvent.ShowError(error))
+                }
+            _state.update { it.copy(isLoading = false) }
         }
     }
 }

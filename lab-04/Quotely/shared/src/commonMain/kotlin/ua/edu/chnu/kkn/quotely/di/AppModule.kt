@@ -5,6 +5,20 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+import ua.edu.chnu.kkn.quotely.data.auth.AppAuthApiService
+import ua.edu.chnu.kkn.quotely.data.auth.AppAuthRepository
+import ua.edu.chnu.kkn.quotely.data.auth.AuthApiService
+import ua.edu.chnu.kkn.quotely.data.remote.createHttpClient
+import ua.edu.chnu.kkn.quotely.data.security.KSafeTokenStorage
+import ua.edu.chnu.kkn.quotely.data.security.SessionEvents
+import ua.edu.chnu.kkn.quotely.data.security.TokenStorage
+import ua.edu.chnu.kkn.quotely.domain.auth.AuthRepository
+import ua.edu.chnu.kkn.quotely.domain.auth.GetCurrentUserUseCase
+import ua.edu.chnu.kkn.quotely.domain.auth.IsAuthorizedUseCase
+import ua.edu.chnu.kkn.quotely.domain.auth.LoginUseCase
+import ua.edu.chnu.kkn.quotely.domain.auth.LogoutUseCase
+import ua.edu.chnu.kkn.quotely.domain.auth.ObserveSessionExpiredUseCase
+import ua.edu.chnu.kkn.quotely.ui.home.HomeViewModel
 import ua.edu.chnu.kkn.quotely.data.onboarding.AppOnboardingRepository
 import ua.edu.chnu.kkn.quotely.data.settings.AppPreferencesRepository
 import ua.edu.chnu.kkn.quotely.data.settings.AppSettings
@@ -28,7 +42,20 @@ val dataModule = module {
     singleOf(::AppPreferencesRepository) { bind<PreferencesRepository>() }
 }
 
+val networkModule = module {
+    singleOf(::SessionEvents)
+    single<TokenStorage> { KSafeTokenStorage(get()) }
+    single { createHttpClient(engine = get(), tokenStorage = get(), sessionEvents = get()) }
+    singleOf(::AppAuthApiService) { bind<AuthApiService>() }
+    singleOf(::AppAuthRepository) { bind<AuthRepository>() }
+}
+
 val domainModule = module {
+    factoryOf(::LoginUseCase)
+    factoryOf(::LogoutUseCase)
+    factoryOf(::IsAuthorizedUseCase)
+    factoryOf(::GetCurrentUserUseCase)
+    factoryOf(::ObserveSessionExpiredUseCase)
     factoryOf(::CompleteOnboardingUseCase)
     factoryOf(::IsOnboardingCompletedUseCase)
     factoryOf(::ResetOnboardingUseCase)
@@ -43,6 +70,7 @@ val presentationModule = module {
     viewModelOf(::MainViewModel)
     viewModelOf(::OnboardingViewModel)
     viewModelOf(::LoginViewModel)
+    viewModelOf(::HomeViewModel)
 }
 
-val appModules = listOf(dataModule, domainModule, presentationModule)
+val appModules = listOf(platformModule, dataModule, networkModule, domainModule, presentationModule)

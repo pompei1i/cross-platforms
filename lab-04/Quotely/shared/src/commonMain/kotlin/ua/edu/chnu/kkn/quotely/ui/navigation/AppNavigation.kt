@@ -6,7 +6,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import ua.edu.chnu.kkn.quotely.domain.settings.ThemeMode
-import ua.edu.chnu.kkn.quotely.ui.home.HomeScreen
+import ua.edu.chnu.kkn.quotely.ui.home.HomeRoute
 import ua.edu.chnu.kkn.quotely.ui.login.LoginRoute
 import ua.edu.chnu.kkn.quotely.ui.main.MainAction
 import ua.edu.chnu.kkn.quotely.ui.onboarding.OnboardingRoute
@@ -44,12 +44,13 @@ fun AppNavigation(
                 )
             }
             entry<Route.Home> {
-                HomeScreen(
+                HomeRoute(
                     currentLanguage = currentLanguage,
                     onLanguageChange = onLanguageChange,
                     themeMode = themeMode,
                     onThemeModeChange = { onAction(MainAction.ChangeThemeMode(it)) },
                     onShowOnboarding = { onAction(MainAction.ShowOnboardingAgain) },
+                    onSignedOut = { onAction(MainAction.SignedOut) },
                 )
             }
         },

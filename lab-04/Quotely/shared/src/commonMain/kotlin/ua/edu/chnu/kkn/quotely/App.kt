@@ -1,11 +1,14 @@
 package ua.edu.chnu.kkn.quotely
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
@@ -31,6 +34,11 @@ fun App(viewModel: MainViewModel = koinViewModel()) {
     AppLocaleProvider(state.language) {
         QuotelyTheme(themeMode = state.themeMode) {
             Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
+                if (viewModel.backStack.isEmpty()) {
+                    // The start destination is being resolved (reading the secure storage)
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+                    return@Surface
+                }
                 AppNavigation(
                     // The back stack lives in MainViewModel, so it survives the recomposition caused by a language switch
                     backStack = viewModel.backStack,

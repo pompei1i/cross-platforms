@@ -2,6 +2,7 @@ package ua.edu.chnu.kkn.quotely.ui.login
 
 import androidx.compose.runtime.Immutable
 import ua.edu.chnu.kkn.quotely.domain.auth.validation.ValidationError
+import ua.edu.chnu.kkn.quotely.domain.common.DataError
 
 @Immutable
 data class LoginState(
@@ -30,4 +31,7 @@ sealed interface LoginEvent {
     /** Moves the cursor to the first field that failed validation. */
     data class FocusField(val field: LoginField) : LoginEvent
     data object NavigateToHome : LoginEvent
+
+    /** Sign-in failed: shown in a snackbar. */
+    data class ShowError(val error: DataError) : LoginEvent
 }

@@ -65,4 +65,21 @@
     <string name="validation_password_too_short">Password must be at least %1$d characters</string>
     <string name="validation_password_too_long">Password must be at most %1$d characters</string>
     <string name="validation_password_whitespace">Password must not contain spaces</string>
+
+    <!-- Errors -->
+    <string name="error_no_internet">No internet connection. Check your network and try again.</string>
+    <string name="error_timeout">The server is taking too long to respond. Try again.</string>
+    <string name="error_invalid_credentials">Wrong username or password</string>
+    <string name="error_session_expired">Your session has expired. Please sign in again.</string>
+    <string name="error_server">The server is unavailable right now (%1$d). Try again later.</string>
+    <string name="error_bad_data">Received unexpected data from the server</string>
+    <string name="error_unknown">Something went wrong. Try again.</string>
+    <string name="common_retry">Retry</string>
+
+    <string name="login_demo_hint">Demo account: emilys / emilyspass</string>
+    <string name="home_greeting">Hello, %1$s</string>
+    <string name="home_greeting_loading">Hello!</string>
+    <string name="home_signed_in_as">Signed in as @%1$s</string>
+    <string name="home_profile_error">Couldn’t load your profile</string>
+    <string name="settings_sign_out">Sign out</string>
 </resources>

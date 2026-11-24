@@ -65,4 +65,21 @@
     <string name="validation_password_too_short">Пароль має містити щонайменше %1$d символів</string>
     <string name="validation_password_too_long">Пароль має містити не більше %1$d символів</string>
     <string name="validation_password_whitespace">Пароль не може містити пробілів</string>
+
+    <!-- Помилки -->
+    <string name="error_no_internet">Немає з’єднання з інтернетом. Перевірте мережу та спробуйте ще раз.</string>
+    <string name="error_timeout">Сервер надто довго не відповідає. Спробуйте ще раз.</string>
+    <string name="error_invalid_credentials">Неправильне ім’я користувача або пароль</string>
+    <string name="error_session_expired">Сеанс завершився. Увійдіть знову.</string>
+    <string name="error_server">Сервер зараз недоступний (%1$d). Спробуйте пізніше.</string>
+    <string name="error_bad_data">Сервер повернув неочікувані дані</string>
+    <string name="error_unknown">Щось пішло не так. Спробуйте ще раз.</string>
+    <string name="common_retry">Повторити</string>
+
+    <string name="login_demo_hint">Демо-акаунт: emilys / emilyspass</string>
+    <string name="home_greeting">Вітаємо, %1$s</string>
+    <string name="home_greeting_loading">Вітаємо!</string>
+    <string name="home_signed_in_as">Ви увійшли як @%1$s</string>
+    <string name="home_profile_error">Не вдалося завантажити профіль</string>
+    <string name="settings_sign_out">Вийти</string>
 </resources>

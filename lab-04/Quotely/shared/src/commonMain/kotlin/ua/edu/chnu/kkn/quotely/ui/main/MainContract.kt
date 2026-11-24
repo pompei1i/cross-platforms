@@ -17,6 +17,7 @@ sealed interface MainAction {
     /** The onboarding was finished or skipped (its result is already saved). */
     data object OnboardingFinished : MainAction
     data object SignedIn : MainAction
+    data object SignedOut : MainAction
     data object ShowOnboardingAgain : MainAction
     data object NavigateBack : MainAction
 }

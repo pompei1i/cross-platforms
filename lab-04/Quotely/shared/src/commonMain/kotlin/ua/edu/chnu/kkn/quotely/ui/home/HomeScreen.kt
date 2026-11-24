@@ -25,6 +25,20 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.compose.viewmodel.koinViewModel
+import ua.edu.chnu.kkn.quotely.resources.common_retry
+import ua.edu.chnu.kkn.quotely.resources.home_greeting
+import ua.edu.chnu.kkn.quotely.resources.home_greeting_loading
+import ua.edu.chnu.kkn.quotely.resources.home_profile_error
+import ua.edu.chnu.kkn.quotely.resources.home_signed_in_as
+import ua.edu.chnu.kkn.quotely.resources.ic_logout
+import ua.edu.chnu.kkn.quotely.resources.settings_sign_out
+import ua.edu.chnu.kkn.quotely.ui.common.ObserveEvents
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,9 +73,39 @@ import ua.edu.chnu.kkn.quotely.ui.components.LanguageSwitcher
 import ua.edu.chnu.kkn.quotely.ui.components.PillOption
 import ua.edu.chnu.kkn.quotely.ui.components.PillSegmentedControl
 
-/** Placeholder home screen: the quotes feed arrives in the next lab, for now it hosts the user settings. */
+/** Wires [HomeScreen] to its [HomeViewModel]. */
+@Composable
+fun HomeRoute(
+    currentLanguage: String,
+    onLanguageChange: (String) -> Unit,
+    themeMode: ThemeMode,
+    onThemeModeChange: (ThemeMode) -> Unit,
+    onShowOnboarding: () -> Unit,
+    onSignedOut: () -> Unit,
+    viewModel: HomeViewModel = koinViewModel(),
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    ObserveEvents(viewModel.events) { event ->
+        when (event) {
+            HomeEvent.NavigateToLogin -> onSignedOut()
+        }
+    }
+    HomeScreen(
+        state = state,
+        onAction = viewModel::onAction,
+        currentLanguage = currentLanguage,
+        onLanguageChange = onLanguageChange,
+        themeMode = themeMode,
+        onThemeModeChange = onThemeModeChange,
+        onShowOnboarding = onShowOnboarding,
+    )
+}
+
+/** Home page shown after a successful sign-in: profile greeting, a placeholder for the quotes feed and settings. */
 @Composable
 fun HomeScreen(
+    state: HomeState,
+    onAction: (HomeAction) -> Unit,
     currentLanguage: String,
     onLanguageChange: (String) -> Unit,
     themeMode: ThemeMode,
@@ -86,7 +130,9 @@ fun HomeScreen(
             style = MaterialTheme.typography.bodyLarge,
             color = colors.onSurfaceVariant,
         )
-        Spacer(Modifier.height(24.dp))
+        Spacer(Modifier.height(20.dp))
+        ProfileHeader(state = state, onRetry = { onAction(HomeAction.RetryProfile) })
+        Spacer(Modifier.height(20.dp))
 
         PlaceholderCard()
 
@@ -130,6 +176,61 @@ fun HomeScreen(
             Icon(painterResource(Res.drawable.ic_history), null, modifier = Modifier.size(20.dp))
             Spacer(Modifier.width(10.dp))
             Text(stringResource(Res.string.settings_show_onboarding))
+        }
+        Spacer(Modifier.height(12.dp))
+        TextButton(
+            onClick = { onAction(HomeAction.SignOut) },
+            colors = ButtonDefaults.textButtonColors(contentColor = colors.error),
+            modifier = Modifier.fillMaxWidth().height(52.dp),
+        ) {
+            Icon(painterResource(Res.drawable.ic_logout), null, modifier = Modifier.size(20.dp))
+            Spacer(Modifier.width(10.dp))
+            Text(stringResource(Res.string.settings_sign_out))
+        }
+    }
+}
+
+@Composable
+private fun ProfileHeader(state: HomeState, onRetry: () -> Unit) {
+    val colors = MaterialTheme.colorScheme
+    val user = state.user
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Box(
+            modifier = Modifier.size(52.dp).clip(CircleShape).background(colors.primaryContainer),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (state.isLoading && user == null) {
+                CircularProgressIndicator(modifier = Modifier.size(22.dp), strokeWidth = 2.dp)
+            } else {
+                Text(
+                    text = user?.displayName?.take(1)?.uppercase() ?: "?",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = colors.onPrimaryContainer,
+                )
+            }
+        }
+        Spacer(Modifier.width(14.dp))
+        Column(Modifier.weight(1f)) {
+            Text(
+                text = if (user != null) stringResource(Res.string.home_greeting, user.displayName)
+                else stringResource(Res.string.home_greeting_loading),
+                style = MaterialTheme.typography.titleLarge,
+            )
+            when {
+                user != null -> Text(
+                    text = stringResource(Res.string.home_signed_in_as, user.username),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colors.onSurfaceVariant,
+                )
+                state.error != null -> Text(
+                    text = stringResource(Res.string.home_profile_error),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colors.error,
+                )
+            }
+        }
+        if (state.error != null && !state.isLoading) {
+            TextButton(onClick = onRetry) { Text(stringResource(Res.string.common_retry)) }
         }
     }
 }

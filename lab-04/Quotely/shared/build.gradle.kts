@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinxSerialization)
 }
 
 kotlin {
@@ -52,6 +53,7 @@ kotlin {
             implementation(libs.compose.uiTooling)
             implementation(libs.androidx.navigation3.ui)
             implementation(libs.koin.android)
+            implementation(libs.ktor.client.okhttp)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -69,12 +71,25 @@ kotlin {
             api(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.auth)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ksafe)
+        }
+        jvmMain.dependencies {
+            implementation(libs.ktor.client.cio)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.multiplatform.settings.test)
             implementation(libs.koin.test)
             implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.ktor.client.mock)
         }
     }
 }
