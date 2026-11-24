@@ -1,8 +1,8 @@
 package ua.edu.chnu.kkn.quotely
 
 import com.russhwolf.settings.MapSettings
-import ua.edu.chnu.kkn.quotely.settings.AppSettings
-import ua.edu.chnu.kkn.quotely.settings.ThemeMode
+import ua.edu.chnu.kkn.quotely.data.settings.AppSettings
+import ua.edu.chnu.kkn.quotely.domain.settings.ThemeMode
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse

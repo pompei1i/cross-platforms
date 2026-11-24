@@ -54,7 +54,7 @@ import ua.edu.chnu.kkn.quotely.resources.settings_theme_dark
 import ua.edu.chnu.kkn.quotely.resources.settings_theme_light
 import ua.edu.chnu.kkn.quotely.resources.settings_theme_system
 import ua.edu.chnu.kkn.quotely.resources.settings_title
-import ua.edu.chnu.kkn.quotely.settings.ThemeMode
+import ua.edu.chnu.kkn.quotely.domain.settings.ThemeMode
 import ua.edu.chnu.kkn.quotely.ui.components.LanguageSwitcher
 import ua.edu.chnu.kkn.quotely.ui.components.PillOption
 import ua.edu.chnu.kkn.quotely.ui.components.PillSegmentedControl

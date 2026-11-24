@@ -1,15 +1,15 @@
-package ua.edu.chnu.kkn.quotely.settings
+package ua.edu.chnu.kkn.quotely.data.settings
 
 import com.russhwolf.settings.Settings
 import com.russhwolf.settings.boolean
 import com.russhwolf.settings.nullableString
 import com.russhwolf.settings.string
-
-enum class ThemeMode { System, Light, Dark }
+import ua.edu.chnu.kkn.quotely.domain.settings.ThemeMode
 
 /**
  * User preferences persisted with multiplatform-settings
  * (SharedPreferences on Android, NSUserDefaults on iOS, java.util.prefs on desktop).
+ * Only repositories of the data layer talk to it directly.
  */
 class AppSettings(settings: Settings = Settings()) {
 

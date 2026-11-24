@@ -1,99 +1,43 @@
 package ua.edu.chnu.kkn.quotely
 
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
+import org.koin.compose.viewmodel.koinViewModel
 import ua.edu.chnu.kkn.quotely.locale.AppLocaleProvider
 import ua.edu.chnu.kkn.quotely.locale.LocalAppLocale
 import ua.edu.chnu.kkn.quotely.locale.SupportedLanguages
-import ua.edu.chnu.kkn.quotely.settings.AppSettings
-import ua.edu.chnu.kkn.quotely.settings.ThemeMode
-import ua.edu.chnu.kkn.quotely.ui.home.HomeScreen
-import ua.edu.chnu.kkn.quotely.ui.onboarding.OnboardingScreen
+import ua.edu.chnu.kkn.quotely.ui.main.MainViewModel
+import ua.edu.chnu.kkn.quotely.ui.navigation.AppNavigation
 import ua.edu.chnu.kkn.quotely.ui.theme.QuotelyTheme
 
 private val log = Logger.withTag("App")
 
-/** UI state backed by [AppSettings]: every change is persisted immediately. */
-class AppState(private val settings: AppSettings) {
-    var isOnboardingCompleted by mutableStateOf(settings.isOnboardingCompleted)
-        private set
-    var language by mutableStateOf(settings.language)
-        private set
-    var themeMode by mutableStateOf(settings.themeMode)
-        private set
-
-    /** Kept outside the onboarding screen so the page survives a language switch. */
-    var onboardingPage by mutableIntStateOf(0)
-
-    fun completeOnboarding() {
-        settings.isOnboardingCompleted = true
-        isOnboardingCompleted = true
-    }
-
-    fun showOnboardingAgain() {
-        log.i { "Onboarding requested again" }
-        onboardingPage = 0
-        settings.isOnboardingCompleted = false
-        isOnboardingCompleted = false
-    }
-
-    fun changeLanguage(languageTag: String) {
-        log.i { "Language changed: $language -> $languageTag" }
-        settings.language = languageTag
-        language = languageTag
-    }
-
-    fun changeThemeMode(mode: ThemeMode) {
-        log.i { "Theme changed: $themeMode -> $mode" }
-        settings.themeMode = mode
-        themeMode = mode
-    }
-}
-
+/** Root composable. Koin must be started by the platform entry point before it is shown. */
 @Composable
-@Preview
-fun App() {
-    val state = remember { AppState(AppSettings()) }
+fun App(viewModel: MainViewModel = koinViewModel()) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
-        log.i { "Quotely started on ${getPlatform().name}, onboarding completed: ${state.isOnboardingCompleted}" }
+        log.i { "Quotely started on ${getPlatform().name}" }
     }
 
     AppLocaleProvider(state.language) {
         QuotelyTheme(themeMode = state.themeMode) {
             Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-                val currentLanguage = state.language ?: resolveLanguage(LocalAppLocale.current)
-                Crossfade(targetState = state.isOnboardingCompleted) { completed ->
-                    if (completed) {
-                        HomeScreen(
-                            currentLanguage = currentLanguage,
-                            onLanguageChange = state::changeLanguage,
-                            themeMode = state.themeMode,
-                            onThemeModeChange = state::changeThemeMode,
-                            onShowOnboarding = state::showOnboardingAgain,
-                        )
-                    } else {
-                        OnboardingScreen(
-                            currentLanguage = currentLanguage,
-                            onLanguageChange = state::changeLanguage,
-                            onFinish = state::completeOnboarding,
-                            initialPage = state.onboardingPage,
-                            onPageChange = { state.onboardingPage = it },
-                        )
-                    }
-                }
+                AppNavigation(
+                    // The back stack lives in MainViewModel, so it survives the recomposition caused by a language switch
+                    backStack = viewModel.backStack,
+                    currentLanguage = state.language ?: resolveLanguage(LocalAppLocale.current),
+                    themeMode = state.themeMode,
+                    onAction = viewModel::onAction,
+                )
             }
         }
     }

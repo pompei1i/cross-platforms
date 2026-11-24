@@ -38,10 +38,11 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import co.touchlab.kermit.Logger
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 import ua.edu.chnu.kkn.quotely.resources.Res
 import ua.edu.chnu.kkn.quotely.resources.ic_arrow_back
 import ua.edu.chnu.kkn.quotely.resources.ic_arrow_forward
@@ -50,34 +51,49 @@ import ua.edu.chnu.kkn.quotely.resources.onboarding_get_started
 import ua.edu.chnu.kkn.quotely.resources.onboarding_next
 import ua.edu.chnu.kkn.quotely.resources.onboarding_page_counter
 import ua.edu.chnu.kkn.quotely.resources.onboarding_skip
+import ua.edu.chnu.kkn.quotely.ui.common.ObserveEvents
 import ua.edu.chnu.kkn.quotely.ui.components.LanguageSwitcher
 import kotlin.math.absoluteValue
 
-private val log = Logger.withTag("Onboarding")
+/** Wires [OnboardingScreen] to its [OnboardingViewModel]. */
+@Composable
+fun OnboardingRoute(
+    currentLanguage: String,
+    onLanguageChange: (String) -> Unit,
+    onFinished: () -> Unit,
+    viewModel: OnboardingViewModel = koinViewModel(),
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    ObserveEvents(viewModel.events) { event ->
+        when (event) {
+            OnboardingEvent.NavigateToLogin -> onFinished()
+        }
+    }
+    OnboardingScreen(
+        state = state,
+        onAction = viewModel::onAction,
+        currentLanguage = currentLanguage,
+        onLanguageChange = onLanguageChange,
+    )
+}
 
 @Composable
 fun OnboardingScreen(
+    state: OnboardingState,
+    onAction: (OnboardingAction) -> Unit,
     currentLanguage: String,
     onLanguageChange: (String) -> Unit,
-    onFinish: () -> Unit,
-    initialPage: Int = 0,
-    onPageChange: (Int) -> Unit = {},
     pages: List<OnboardingPage> = onboardingPages,
 ) {
-    val pagerState = rememberPagerState(initialPage = initialPage, pageCount = { pages.size })
+    // The ViewModel keeps the page, so it survives a language switch and configuration changes
+    val pagerState = rememberPagerState(initialPage = state.currentPage, pageCount = { pages.size })
     val coroutineScope = rememberCoroutineScope()
     val isLastPage = pagerState.currentPage == pages.lastIndex
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
-            log.d { "Page ${page + 1}/${pages.size} shown" }
-            onPageChange(page)
+            onAction(OnboardingAction.PageChanged(page))
         }
-    }
-
-    fun finish(skipped: Boolean) {
-        log.i { if (skipped) "Onboarding skipped on page ${pagerState.currentPage + 1}" else "Onboarding completed" }
-        onFinish()
     }
 
     Column(
@@ -100,7 +116,7 @@ fun OnboardingScreen(
             )
             Spacer(Modifier.weight(1f))
             TextButton(
-                onClick = { finish(skipped = true) },
+                onClick = { onAction(OnboardingAction.Skip) },
                 enabled = !isLastPage,
                 modifier = Modifier.alpha(if (isLastPage) 0f else 1f),
             ) {
@@ -149,7 +165,7 @@ fun OnboardingScreen(
             Button(
                 onClick = {
                     if (isLastPage) {
-                        finish(skipped = false)
+                        onAction(OnboardingAction.GetStarted)
                     } else {
                         coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
                     }

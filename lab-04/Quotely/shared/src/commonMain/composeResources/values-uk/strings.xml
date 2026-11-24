@@ -47,4 +47,22 @@
 
     <string name="language_en">English</string>
     <string name="language_uk">Українська</string>
+
+    <!-- Вхід -->
+    <string name="login_title">З поверненням</string>
+    <string name="login_subtitle">Увійдіть, щоб і далі збирати слова, які вас надихають.</string>
+    <string name="login_username">Ім’я користувача</string>
+    <string name="login_password">Пароль</string>
+    <string name="login_sign_in">Увійти</string>
+    <string name="login_show_password">Показати пароль</string>
+    <string name="login_hide_password">Сховати пароль</string>
+
+    <string name="validation_username_empty">Введіть ім’я користувача</string>
+    <string name="validation_username_too_short">Ім’я користувача має містити щонайменше %1$d символи</string>
+    <string name="validation_username_too_long">Ім’я користувача має містити не більше %1$d символів</string>
+    <string name="validation_username_invalid">Використовуйте лише латинські літери, цифри, крапки, дефіси та підкреслення</string>
+    <string name="validation_password_empty">Введіть пароль</string>
+    <string name="validation_password_too_short">Пароль має містити щонайменше %1$d символів</string>
+    <string name="validation_password_too_long">Пароль має містити не більше %1$d символів</string>
+    <string name="validation_password_whitespace">Пароль не може містити пробілів</string>
 </resources>

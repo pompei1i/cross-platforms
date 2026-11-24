@@ -6,7 +6,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import ua.edu.chnu.kkn.quotely.settings.ThemeMode
+import ua.edu.chnu.kkn.quotely.domain.settings.ThemeMode
 
 private val QuotelyShapes = Shapes(
     extraSmall = RoundedCornerShape(6.dp),
