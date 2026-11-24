@@ -9,6 +9,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.unit.Dp
+import ua.edu.chnu.kkn.quotely.ui.common.ScaleDownToFit
+import ua.edu.chnu.kkn.quotely.ui.common.WindowLayout
+import ua.edu.chnu.kkn.quotely.ui.common.WindowWidth
+import ua.edu.chnu.kkn.quotely.ui.common.currentWindowLayout
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -84,11 +94,13 @@ fun OnboardingScreen(
     currentLanguage: String,
     onLanguageChange: (String) -> Unit,
     pages: List<OnboardingPage> = onboardingPages,
+    layout: WindowLayout = currentWindowLayout(),
 ) {
     // The ViewModel keeps the page, so it survives a language switch and configuration changes
     val pagerState = rememberPagerState(initialPage = state.currentPage, pageCount = { pages.size })
     val coroutineScope = rememberCoroutineScope()
     val isLastPage = pagerState.currentPage == pages.lastIndex
+    val horizontalPadding = if (layout.width == WindowWidth.Compact) 20.dp else 40.dp
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
@@ -96,92 +108,136 @@ fun OnboardingScreen(
         }
     }
 
-    Column(
+    val goBack: () -> Unit = { coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } }
+    val goNext: () -> Unit = {
+        if (isLastPage) {
+            onAction(OnboardingAction.GetStarted)
+        } else {
+            coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
+        }
+    }
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .systemBarsPadding()
-            .padding(vertical = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .displayCutoutPadding(),
+        contentAlignment = Alignment.TopCenter,
     ) {
-        // Top bar: language switch + skip
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
-            verticalAlignment = Alignment.CenterVertically,
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                // Desktop and large tablets: keep lines readable instead of stretching across the screen
+                .widthIn(max = 1100.dp)
+                .padding(vertical = if (layout.isHeightCompact) 8.dp else 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            LanguageSwitcher(
-                currentLanguage = currentLanguage,
-                onLanguageChange = onLanguageChange,
-                compact = true,
-            )
-            Spacer(Modifier.weight(1f))
-            TextButton(
-                onClick = { onAction(OnboardingAction.Skip) },
-                enabled = !isLastPage,
-                modifier = Modifier.alpha(if (isLastPage) 0f else 1f),
+            // Top bar: language switch + skip
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = horizontalPadding),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(stringResource(Res.string.onboarding_skip), color = MaterialTheme.colorScheme.onSurface)
+                LanguageSwitcher(
+                    currentLanguage = currentLanguage,
+                    onLanguageChange = onLanguageChange,
+                    compact = true,
+                )
+                Spacer(Modifier.weight(1f))
+                TextButton(
+                    onClick = { onAction(OnboardingAction.Skip) },
+                    enabled = !isLastPage,
+                    modifier = Modifier.alpha(if (isLastPage) 0f else 1f),
+                ) {
+                    Text(stringResource(Res.string.onboarding_skip), color = MaterialTheme.colorScheme.onSurface)
+                }
+            }
+
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.weight(1f).fillMaxWidth(),
+            ) { pageIndex ->
+                OnboardingPageContent(
+                    page = pages[pageIndex],
+                    pageOffset = pagerState.offsetForPage(pageIndex),
+                    layout = layout,
+                    horizontalPadding = horizontalPadding,
+                )
+            }
+
+            if (layout.isHeightCompact) {
+                // Landscape phone: every pixel of height counts, so the indicator moves into the button row
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = horizontalPadding),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    BackButton(visible = pagerState.currentPage > 0, onClick = goBack)
+                    Spacer(Modifier.weight(1f))
+                    PageProgress(currentPage = pagerState.currentPage, pageCount = pages.size)
+                    Spacer(Modifier.weight(1f))
+                    NextButton(isLastPage = isLastPage, onClick = goNext)
+                }
+            } else {
+                PageProgress(currentPage = pagerState.currentPage, pageCount = pages.size)
+                Spacer(Modifier.height(24.dp))
+                Row(
+                    modifier = Modifier
+                        .then(if (layout.width == WindowWidth.Compact) Modifier.fillMaxWidth() else Modifier.widthIn(max = 560.dp))
+                        .padding(horizontal = horizontalPadding),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    BackButton(visible = pagerState.currentPage > 0, onClick = goBack)
+                    Spacer(Modifier.width(16.dp))
+                    if (!isLastPage) {
+                        Spacer(Modifier.weight(1f))
+                    }
+                    NextButton(
+                        isLastPage = isLastPage,
+                        onClick = goNext,
+                        modifier = if (isLastPage) Modifier.weight(1f) else Modifier,
+                    )
+                }
             }
         }
+    }
+}
 
-        HorizontalPager(
-            state = pagerState,
-            modifier = Modifier.weight(1f).fillMaxWidth(),
-        ) { pageIndex ->
-            OnboardingPageContent(
-                page = pages[pageIndex],
-                pageOffset = pagerState.offsetForPage(pageIndex),
-            )
-        }
-
+@Composable
+private fun PageProgress(currentPage: Int, pageCount: Int) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
-            text = stringResource(Res.string.onboarding_page_counter, pagerState.currentPage + 1, pages.size),
+            text = stringResource(Res.string.onboarding_page_counter, currentPage + 1, pageCount),
             style = MaterialTheme.typography.labelMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Spacer(Modifier.height(10.dp))
-        PagerIndicator(pageCount = pages.size, currentPage = pagerState.currentPage)
-        Spacer(Modifier.height(24.dp))
+        PagerIndicator(pageCount = pageCount, currentPage = currentPage)
+    }
+}
 
-        // Bottom navigation: back / next or get started
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            val canGoBack = pagerState.currentPage > 0
-            TextButton(
-                onClick = { coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage - 1) } },
-                enabled = canGoBack,
-                modifier = Modifier.alpha(if (canGoBack) 1f else 0f),
-            ) {
-                Icon(painterResource(Res.drawable.ic_arrow_back), null, modifier = Modifier.size(18.dp))
-                Spacer(Modifier.width(6.dp))
-                Text(stringResource(Res.string.onboarding_back))
-            }
-            Spacer(Modifier.width(16.dp))
-            if (!isLastPage) {
-                Spacer(Modifier.weight(1f))
-            }
-            Button(
-                onClick = {
-                    if (isLastPage) {
-                        onAction(OnboardingAction.GetStarted)
-                    } else {
-                        coroutineScope.launch { pagerState.animateScrollToPage(pagerState.currentPage + 1) }
-                    }
-                },
-                contentPadding = ButtonDefaults.ContentPadding,
-                modifier = Modifier
-                    .then(if (isLastPage) Modifier.weight(1f) else Modifier)
-                    .height(52.dp),
-            ) {
-                Text(
-                    stringResource(if (isLastPage) Res.string.onboarding_get_started else Res.string.onboarding_next)
-                )
-                Spacer(Modifier.width(8.dp))
-                Icon(painterResource(Res.drawable.ic_arrow_forward), null, modifier = Modifier.size(18.dp))
-            }
-        }
+@Composable
+private fun BackButton(visible: Boolean, onClick: () -> Unit) {
+    TextButton(
+        onClick = onClick,
+        enabled = visible,
+        modifier = Modifier.alpha(if (visible) 1f else 0f),
+    ) {
+        Icon(painterResource(Res.drawable.ic_arrow_back), null, modifier = Modifier.size(18.dp))
+        Spacer(Modifier.width(6.dp))
+        Text(stringResource(Res.string.onboarding_back))
+    }
+}
+
+@Composable
+private fun NextButton(isLastPage: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Button(
+        onClick = onClick,
+        contentPadding = ButtonDefaults.ContentPadding,
+        modifier = modifier.height(52.dp),
+    ) {
+        Text(stringResource(if (isLastPage) Res.string.onboarding_get_started else Res.string.onboarding_next))
+        Spacer(Modifier.width(8.dp))
+        Icon(painterResource(Res.drawable.ic_arrow_forward), null, modifier = Modifier.size(18.dp))
     }
 }
 
@@ -190,49 +246,85 @@ private fun PagerState.offsetForPage(page: Int): Float =
     (currentPage - page) + currentPageOffsetFraction
 
 @Composable
-private fun OnboardingPageContent(page: OnboardingPage, pageOffset: Float) {
+private fun OnboardingPageContent(
+    page: OnboardingPage,
+    pageOffset: Float,
+    layout: WindowLayout,
+    horizontalPadding: Dp,
+) {
     val fraction = 1f - pageOffset.absoluteValue.coerceIn(0f, 1f)
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 28.dp)
-            .graphicsLayer {
-                // Fade and shrink the pages that are moving off screen
-                alpha = lerp(0.2f, 1f, fraction)
-                val scale = lerp(0.85f, 1f, fraction)
-                scaleX = scale
-                scaleY = scale
-            },
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Box(
-            modifier = Modifier.graphicsLayer {
-                // Parallax: the illustration lags behind the text
-                translationX = pageOffset * size.width * 0.35f
-            },
-            contentAlignment = Alignment.Center,
-        ) {
-            OnboardingIllustrationView(page.illustration)
+    val pageModifier = Modifier
+        .fillMaxSize()
+        .padding(horizontal = horizontalPadding + 8.dp)
+        .graphicsLayer {
+            // Fade and shrink the pages that are moving off screen
+            alpha = lerp(0.2f, 1f, fraction)
+            val scale = lerp(0.85f, 1f, fraction)
+            scaleX = scale
+            scaleY = scale
         }
-        Spacer(Modifier.height(32.dp))
-        Text(
-            text = stringResource(page.title),
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(Modifier.height(12.dp))
-        Text(
-            text = stringResource(page.text),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(Modifier.height(24.dp))
-        OnboardingExtraContent(page.illustration)
+    // Parallax: the illustration lags behind the text
+    val parallax = Modifier.graphicsLayer { translationX = pageOffset * size.width * 0.35f }
+
+    if (layout.useTwoPanes) {
+        // Landscape phones, tablets, desktop: illustration and text side by side
+        Row(
+            modifier = pageModifier,
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(if (layout.isHeightCompact) 24.dp else 48.dp),
+        ) {
+            ScaleDownToFit(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .padding(vertical = 8.dp)
+                    .then(parallax),
+            ) {
+                OnboardingIllustrationView(page.illustration)
+            }
+            Column(
+                modifier = Modifier.weight(1f).verticalScroll(rememberScrollState()),
+            ) {
+                PageTexts(page, textAlign = TextAlign.Start, large = layout.width == WindowWidth.Expanded)
+                Spacer(Modifier.height(if (layout.isHeightCompact) 12.dp else 24.dp))
+                OnboardingExtraContent(page.illustration)
+            }
+        }
+    } else {
+        Column(
+            modifier = pageModifier,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            // Shrinks on short phones instead of pushing the text off screen
+            ScaleDownToFit(modifier = Modifier.weight(1f, fill = false).then(parallax)) {
+                OnboardingIllustrationView(page.illustration)
+            }
+            Spacer(Modifier.height(32.dp))
+            PageTexts(page, textAlign = TextAlign.Center, large = false)
+            Spacer(Modifier.height(24.dp))
+            OnboardingExtraContent(page.illustration)
+        }
     }
+}
+
+@Composable
+private fun PageTexts(page: OnboardingPage, textAlign: TextAlign, large: Boolean) {
+    Text(
+        text = stringResource(page.title),
+        style = if (large) MaterialTheme.typography.displaySmall else MaterialTheme.typography.headlineMedium,
+        color = MaterialTheme.colorScheme.onBackground,
+        textAlign = textAlign,
+        modifier = Modifier.fillMaxWidth(),
+    )
+    Spacer(Modifier.height(12.dp))
+    Text(
+        text = stringResource(page.text),
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        textAlign = textAlign,
+        modifier = Modifier.fillMaxWidth(),
+    )
 }
 
 @Composable

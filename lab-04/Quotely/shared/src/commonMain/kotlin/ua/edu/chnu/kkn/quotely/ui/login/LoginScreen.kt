@@ -3,6 +3,20 @@ package ua.edu.chnu.kkn.quotely.ui.login
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.displayCutoutPadding
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.offset
+import androidx.compose.material3.Surface
+import androidx.compose.ui.text.font.FontStyle
+import ua.edu.chnu.kkn.quotely.resources.app_name
+import ua.edu.chnu.kkn.quotely.resources.login_brand_tagline
+import ua.edu.chnu.kkn.quotely.resources.onboarding_sample_author
+import ua.edu.chnu.kkn.quotely.resources.onboarding_sample_quote
+import ua.edu.chnu.kkn.quotely.ui.common.WindowLayout
+import ua.edu.chnu.kkn.quotely.ui.common.WindowWidth
+import ua.edu.chnu.kkn.quotely.ui.common.currentWindowLayout
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -130,36 +144,177 @@ fun LoginScreen(
     onLanguageChange: (String) -> Unit,
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     focusRequesters: LoginFocusRequesters = remember { LoginFocusRequesters() },
+    layout: WindowLayout = currentWindowLayout(),
 ) {
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         containerColor = MaterialTheme.colorScheme.background,
     ) { innerPadding ->
+        val contentModifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+            .consumeWindowInsets(innerPadding)
+            .displayCutoutPadding()
+            .imePadding()
+        val languageSwitcher = @Composable {
+            LanguageSwitcher(currentLanguage = currentLanguage, onLanguageChange = onLanguageChange, compact = true)
+        }
+        val form = @Composable {
+            LoginForm(state = state, onAction = onAction, focusRequesters = focusRequesters)
+        }
+
+        if (layout.useTwoPanes) {
+            TwoPaneLogin(layout = layout, languageSwitcher = languageSwitcher, form = form, modifier = contentModifier)
+        } else {
+            SinglePaneLogin(languageSwitcher = languageSwitcher, form = form, modifier = contentModifier)
+        }
+    }
+}
+
+/** Phones in portrait: header above the form, one scrolling column. */
+@Composable
+private fun SinglePaneLogin(
+    languageSwitcher: @Composable () -> Unit,
+    form: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 24.dp, vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Row(modifier = Modifier.fillMaxWidth()) { languageSwitcher() }
+        Spacer(Modifier.height(40.dp))
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .consumeWindowInsets(innerPadding)
-                .imePadding()
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp, vertical = 16.dp),
+            modifier = Modifier.widthIn(max = 440.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                LanguageSwitcher(
-                    currentLanguage = currentLanguage,
-                    onLanguageChange = onLanguageChange,
-                    compact = true,
-                )
-            }
-            Spacer(Modifier.height(40.dp))
+            LoginHeader()
+            Spacer(Modifier.height(32.dp))
+            form()
+        }
+    }
+}
+
+/**
+ * Tablets, desktop windows and phones in landscape: a brand panel on the left
+ * and the form, vertically centered, on the right.
+ */
+@Composable
+private fun TwoPaneLogin(
+    layout: WindowLayout,
+    languageSwitcher: @Composable () -> Unit,
+    form: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val gap = if (layout.isHeightCompact) 12.dp else 24.dp
+    Row(
+        modifier = modifier.padding(gap),
+        horizontalArrangement = Arrangement.spacedBy(gap),
+    ) {
+        LoginBrandPanel(
+            showQuote = !layout.isHeightCompact,
+            modifier = Modifier
+                .weight(if (layout.width == WindowWidth.Expanded) 1.15f else 1f)
+                .fillMaxHeight(),
+        )
+        BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxHeight()) {
             Column(
-                modifier = Modifier.widthIn(max = 440.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    // Centered while it fits, scrolls when the keyboard or a short window needs it
+                    .heightIn(min = maxHeight)
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
             ) {
-                LoginHeader()
-                Spacer(Modifier.height(32.dp))
-                LoginForm(state = state, onAction = onAction, focusRequesters = focusRequesters)
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) { languageSwitcher() }
+                Spacer(Modifier.height(if (layout.isHeightCompact) 8.dp else 24.dp))
+                Column(modifier = Modifier.widthIn(max = 420.dp).fillMaxWidth()) {
+                    Text(
+                        text = stringResource(Res.string.login_title),
+                        style = if (layout.isHeightCompact) MaterialTheme.typography.titleLarge
+                        else MaterialTheme.typography.headlineMedium,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    )
+                    if (!layout.isHeightCompact) {
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = stringResource(Res.string.login_subtitle),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    Spacer(Modifier.height(if (layout.isHeightCompact) 12.dp else 28.dp))
+                    form()
+                }
+                Spacer(Modifier.height(8.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun LoginBrandPanel(showQuote: Boolean, modifier: Modifier = Modifier) {
+    val colors = MaterialTheme.colorScheme
+    Surface(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.extraLarge,
+        color = colors.primaryContainer,
+        contentColor = colors.onPrimaryContainer,
+    ) {
+        Box {
+            // Large faded quote mark in the corner
+            Icon(
+                painter = painterResource(Res.drawable.ic_format_quote),
+                contentDescription = null,
+                tint = colors.onPrimaryContainer.copy(alpha = 0.07f),
+                modifier = Modifier.align(Alignment.BottomEnd).size(260.dp).offset(x = 40.dp, y = 40.dp),
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(if (showQuote) 40.dp else 24.dp),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Box(
+                    modifier = Modifier.size(if (showQuote) 64.dp else 48.dp).clip(CircleShape).background(colors.secondaryContainer),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_format_quote),
+                        contentDescription = null,
+                        tint = colors.secondary,
+                        modifier = Modifier.size(if (showQuote) 32.dp else 24.dp),
+                    )
+                }
+                Spacer(Modifier.height(if (showQuote) 28.dp else 16.dp))
+                Text(
+                    text = stringResource(Res.string.app_name),
+                    style = if (showQuote) MaterialTheme.typography.displayMedium else MaterialTheme.typography.headlineMedium,
+                )
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = stringResource(Res.string.login_brand_tagline),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = colors.onPrimaryContainer.copy(alpha = 0.8f),
+                )
+                if (showQuote) {
+                    Spacer(Modifier.height(48.dp))
+                    Text(
+                        text = stringResource(Res.string.onboarding_sample_quote),
+                        style = MaterialTheme.typography.headlineSmall.copy(fontStyle = FontStyle.Italic),
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    Text(
+                        text = "— " + stringResource(Res.string.onboarding_sample_author),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = colors.onPrimaryContainer.copy(alpha = 0.8f),
+                    )
+                }
             }
         }
     }

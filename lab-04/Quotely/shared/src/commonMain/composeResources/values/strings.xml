@@ -76,6 +76,7 @@
     <string name="error_unknown">Something went wrong. Try again.</string>
     <string name="common_retry">Retry</string>
 
+    <string name="login_brand_tagline">Timeless words for quiet moments.</string>
     <string name="login_demo_hint">Demo account: emilys / emilyspass</string>
     <string name="home_greeting">Hello, %1$s</string>
     <string name="home_greeting_loading">Hello!</string>
