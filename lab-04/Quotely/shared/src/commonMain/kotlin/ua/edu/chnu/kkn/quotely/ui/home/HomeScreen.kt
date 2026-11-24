@@ -1,295 +1,267 @@
 package ua.edu.chnu.kkn.quotely.ui.home
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.TextButton
-import androidx.compose.runtime.getValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import org.koin.compose.viewmodel.koinViewModel
-import ua.edu.chnu.kkn.quotely.resources.common_retry
-import ua.edu.chnu.kkn.quotely.resources.home_greeting
-import ua.edu.chnu.kkn.quotely.resources.home_greeting_loading
-import ua.edu.chnu.kkn.quotely.resources.home_profile_error
-import ua.edu.chnu.kkn.quotely.resources.home_signed_in_as
-import ua.edu.chnu.kkn.quotely.resources.ic_logout
-import ua.edu.chnu.kkn.quotely.resources.settings_sign_out
-import ua.edu.chnu.kkn.quotely.ui.common.ObserveEvents
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.resources.DrawableResource
+import androidx.compose.ui.unit.sp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
+import ua.edu.chnu.kkn.quotely.domain.common.DataError
+import ua.edu.chnu.kkn.quotely.domain.quotes.Quote
 import ua.edu.chnu.kkn.quotely.resources.Res
-import ua.edu.chnu.kkn.quotely.resources.home_coming_soon
-import ua.edu.chnu.kkn.quotely.resources.home_placeholder_text
-import ua.edu.chnu.kkn.quotely.resources.home_placeholder_title
+import ua.edu.chnu.kkn.quotely.resources.app_name
+import ua.edu.chnu.kkn.quotely.resources.common_retry
+import ua.edu.chnu.kkn.quotely.resources.home_refresh
 import ua.edu.chnu.kkn.quotely.resources.home_subtitle
-import ua.edu.chnu.kkn.quotely.resources.home_title
-import ua.edu.chnu.kkn.quotely.resources.ic_auto_awesome
-import ua.edu.chnu.kkn.quotely.resources.ic_contrast
-import ua.edu.chnu.kkn.quotely.resources.ic_dark_mode
 import ua.edu.chnu.kkn.quotely.resources.ic_format_quote
-import ua.edu.chnu.kkn.quotely.resources.ic_history
-import ua.edu.chnu.kkn.quotely.resources.ic_language
-import ua.edu.chnu.kkn.quotely.resources.ic_light_mode
-import ua.edu.chnu.kkn.quotely.resources.ic_palette
-import ua.edu.chnu.kkn.quotely.resources.settings_language
-import ua.edu.chnu.kkn.quotely.resources.settings_show_onboarding
-import ua.edu.chnu.kkn.quotely.resources.settings_subtitle
-import ua.edu.chnu.kkn.quotely.resources.settings_theme
-import ua.edu.chnu.kkn.quotely.resources.settings_theme_dark
-import ua.edu.chnu.kkn.quotely.resources.settings_theme_light
-import ua.edu.chnu.kkn.quotely.resources.settings_theme_system
+import ua.edu.chnu.kkn.quotely.resources.ic_refresh
+import ua.edu.chnu.kkn.quotely.resources.ic_settings
+import ua.edu.chnu.kkn.quotely.resources.quotes_empty
+import ua.edu.chnu.kkn.quotely.resources.quotes_end
+import ua.edu.chnu.kkn.quotely.resources.quotes_error_title
 import ua.edu.chnu.kkn.quotely.resources.settings_title
-import ua.edu.chnu.kkn.quotely.domain.settings.ThemeMode
-import ua.edu.chnu.kkn.quotely.ui.components.LanguageSwitcher
-import ua.edu.chnu.kkn.quotely.ui.components.PillOption
-import ua.edu.chnu.kkn.quotely.ui.components.PillSegmentedControl
+import ua.edu.chnu.kkn.quotely.ui.common.text
+import ua.edu.chnu.kkn.quotely.ui.quotes.QuotesLoadException
+import ua.edu.chnu.kkn.quotely.ui.theme.loraFontFamily
 
 /** Wires [HomeScreen] to its [HomeViewModel]. */
 @Composable
 fun HomeRoute(
-    currentLanguage: String,
-    onLanguageChange: (String) -> Unit,
-    themeMode: ThemeMode,
-    onThemeModeChange: (ThemeMode) -> Unit,
-    onShowOnboarding: () -> Unit,
-    onSignedOut: () -> Unit,
+    selectedQuoteId: Int?,
+    onQuoteClick: (Int) -> Unit,
+    onOpenSettings: () -> Unit,
     viewModel: HomeViewModel = koinViewModel(),
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    ObserveEvents(viewModel.events) { event ->
-        when (event) {
-            HomeEvent.NavigateToLogin -> onSignedOut()
-        }
-    }
     HomeScreen(
-        state = state,
-        onAction = viewModel::onAction,
-        currentLanguage = currentLanguage,
-        onLanguageChange = onLanguageChange,
-        themeMode = themeMode,
-        onThemeModeChange = onThemeModeChange,
-        onShowOnboarding = onShowOnboarding,
+        quotes = viewModel.quotes.collectAsLazyPagingItems(),
+        selectedQuoteId = selectedQuoteId,
+        onQuoteClick = onQuoteClick,
+        onOpenSettings = onOpenSettings,
     )
 }
 
-/** Home page shown after a successful sign-in: profile greeting, a placeholder for the quotes feed and settings. */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    state: HomeState,
-    onAction: (HomeAction) -> Unit,
-    currentLanguage: String,
-    onLanguageChange: (String) -> Unit,
-    themeMode: ThemeMode,
-    onThemeModeChange: (ThemeMode) -> Unit,
-    onShowOnboarding: () -> Unit,
+    quotes: LazyPagingItems<Quote>,
+    selectedQuoteId: Int?,
+    onQuoteClick: (Int) -> Unit,
+    onOpenSettings: () -> Unit,
 ) {
     val colors = MaterialTheme.colorScheme
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .systemBarsPadding()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 20.dp, vertical = 24.dp),
-    ) {
-        Text(
-            text = stringResource(Res.string.home_title),
-            style = MaterialTheme.typography.displaySmall,
-            color = colors.primary,
-        )
-        Text(
-            text = stringResource(Res.string.home_subtitle),
-            style = MaterialTheme.typography.bodyLarge,
-            color = colors.onSurfaceVariant,
-        )
-        Spacer(Modifier.height(20.dp))
-        ProfileHeader(state = state, onRetry = { onAction(HomeAction.RetryProfile) })
-        Spacer(Modifier.height(20.dp))
-
-        PlaceholderCard()
-
-        Spacer(Modifier.height(36.dp))
-        Text(stringResource(Res.string.settings_title), style = MaterialTheme.typography.headlineSmall)
-        Text(
-            text = stringResource(Res.string.settings_subtitle),
-            style = MaterialTheme.typography.bodyMedium,
-            color = colors.onSurfaceVariant,
-        )
-        Spacer(Modifier.height(12.dp))
-        HorizontalDivider(color = colors.outlineVariant)
-        Spacer(Modifier.height(20.dp))
-
-        SettingLabel(Res.drawable.ic_language, stringResource(Res.string.settings_language))
-        LanguageSwitcher(
-            currentLanguage = currentLanguage,
-            onLanguageChange = onLanguageChange,
-            modifier = Modifier.fillMaxWidth(),
-        )
-        Spacer(Modifier.height(20.dp))
-
-        SettingLabel(Res.drawable.ic_palette, stringResource(Res.string.settings_theme))
-        PillSegmentedControl(
-            options = listOf(
-                PillOption(ThemeMode.System, stringResource(Res.string.settings_theme_system), Res.drawable.ic_contrast),
-                PillOption(ThemeMode.Light, stringResource(Res.string.settings_theme_light), Res.drawable.ic_light_mode),
-                PillOption(ThemeMode.Dark, stringResource(Res.string.settings_theme_dark), Res.drawable.ic_dark_mode),
-            ),
-            selected = themeMode,
-            onSelect = onThemeModeChange,
-            modifier = Modifier.fillMaxWidth(),
-        )
-        Spacer(Modifier.height(28.dp))
-
-        OutlinedButton(
-            onClick = onShowOnboarding,
-            border = BorderStroke(1.dp, colors.primary),
-            modifier = Modifier.fillMaxWidth().height(52.dp),
-        ) {
-            Icon(painterResource(Res.drawable.ic_history), null, modifier = Modifier.size(20.dp))
-            Spacer(Modifier.width(10.dp))
-            Text(stringResource(Res.string.settings_show_onboarding))
-        }
-        Spacer(Modifier.height(12.dp))
-        TextButton(
-            onClick = { onAction(HomeAction.SignOut) },
-            colors = ButtonDefaults.textButtonColors(contentColor = colors.error),
-            modifier = Modifier.fillMaxWidth().height(52.dp),
-        ) {
-            Icon(painterResource(Res.drawable.ic_logout), null, modifier = Modifier.size(20.dp))
-            Spacer(Modifier.width(10.dp))
-            Text(stringResource(Res.string.settings_sign_out))
-        }
-    }
-}
-
-@Composable
-private fun ProfileHeader(state: HomeState, onRetry: () -> Unit) {
-    val colors = MaterialTheme.colorScheme
-    val user = state.user
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(
-            modifier = Modifier.size(52.dp).clip(CircleShape).background(colors.primaryContainer),
-            contentAlignment = Alignment.Center,
-        ) {
-            if (state.isLoading && user == null) {
-                CircularProgressIndicator(modifier = Modifier.size(22.dp), strokeWidth = 2.dp)
-            } else {
-                Text(
-                    text = user?.displayName?.take(1)?.uppercase() ?: "?",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = colors.onPrimaryContainer,
-                )
-            }
-        }
-        Spacer(Modifier.width(14.dp))
-        Column(Modifier.weight(1f)) {
-            Text(
-                text = if (user != null) stringResource(Res.string.home_greeting, user.displayName)
-                else stringResource(Res.string.home_greeting_loading),
-                style = MaterialTheme.typography.titleLarge,
+    Scaffold(
+        containerColor = colors.background,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Column {
+                        Text(stringResource(Res.string.app_name), style = MaterialTheme.typography.titleLarge, color = colors.primary)
+                        Text(
+                            text = stringResource(Res.string.home_subtitle),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = colors.onSurfaceVariant,
+                        )
+                    }
+                },
+                actions = {
+                    // Reload from the first page
+                    IconButton(onClick = { quotes.refresh() }) {
+                        Icon(painterResource(Res.drawable.ic_refresh), stringResource(Res.string.home_refresh))
+                    }
+                    IconButton(onClick = onOpenSettings) {
+                        Icon(painterResource(Res.drawable.ic_settings), stringResource(Res.string.settings_title))
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = colors.background),
             )
+        },
+    ) { innerPadding ->
+        val refresh = quotes.loadState.refresh
+        PullToRefreshBox(
+            isRefreshing = refresh is LoadState.Loading && quotes.itemCount > 0,
+            onRefresh = { quotes.refresh() },
+            modifier = Modifier.fillMaxSize().padding(innerPadding),
+        ) {
             when {
-                user != null -> Text(
-                    text = stringResource(Res.string.home_signed_in_as, user.username),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colors.onSurfaceVariant,
-                )
-                state.error != null -> Text(
-                    text = stringResource(Res.string.home_profile_error),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = colors.error,
-                )
+                refresh is LoadState.Loading && quotes.itemCount == 0 -> CenteredBox { CircularProgressIndicator() }
+
+                refresh is LoadState.Error && quotes.itemCount == 0 -> CenteredBox {
+                    LoadError(
+                        title = stringResource(Res.string.quotes_error_title),
+                        error = refresh.error.toDataError(),
+                        onRetry = { quotes.retry() },
+                    )
+                }
+
+                refresh is LoadState.NotLoading && quotes.itemCount == 0 -> CenteredBox {
+                    Text(stringResource(Res.string.quotes_empty), color = colors.onSurfaceVariant)
+                }
+
+                else -> QuotesList(quotes = quotes, selectedQuoteId = selectedQuoteId, onQuoteClick = onQuoteClick)
             }
-        }
-        if (state.error != null && !state.isLoading) {
-            TextButton(onClick = onRetry) { Text(stringResource(Res.string.common_retry)) }
         }
     }
 }
 
 @Composable
-private fun PlaceholderCard() {
+private fun QuotesList(
+    quotes: LazyPagingItems<Quote>,
+    selectedQuoteId: Int?,
+    onQuoteClick: (Int) -> Unit,
+) {
+    LazyColumn(
+        state = rememberLazyListState(),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize(),
+    ) {
+        // A refresh failed while old items are still shown: keep them, offer a retry on top
+        val refresh = quotes.loadState.refresh
+        if (refresh is LoadState.Error) {
+            item(key = "refresh-error", contentType = "status") {
+                LoadError(
+                    title = stringResource(Res.string.quotes_error_title),
+                    error = refresh.error.toDataError(),
+                    onRetry = { quotes.retry() },
+                )
+            }
+        }
+
+        items(
+            count = quotes.itemCount,
+            key = quotes.itemKey { it.id },
+            contentType = quotes.itemContentType { "quote" },
+        ) { index ->
+            val quote = quotes[index] ?: return@items
+            QuoteCard(
+                quote = quote,
+                selected = quote.id == selectedQuoteId,
+                onClick = { onQuoteClick(quote.id) },
+            )
+        }
+
+        when (val append = quotes.loadState.append) {
+            is LoadState.Loading -> item(key = "append-loading", contentType = "status") {
+                CircularProgressIndicator(modifier = Modifier.padding(16.dp).size(28.dp), strokeWidth = 3.dp)
+            }
+            is LoadState.Error -> item(key = "append-error", contentType = "status") {
+                LoadError(
+                    title = stringResource(Res.string.quotes_error_title),
+                    error = append.error.toDataError(),
+                    onRetry = { quotes.retry() },
+                )
+            }
+            is LoadState.NotLoading -> if (append.endOfPaginationReached && quotes.itemCount > 0) {
+                item(key = "end", contentType = "status") {
+                    Text(
+                        text = stringResource(Res.string.quotes_end),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(16.dp),
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun QuoteCard(quote: Quote, selected: Boolean, onClick: () -> Unit) {
     val colors = MaterialTheme.colorScheme
     Surface(
-        color = colors.secondaryContainer,
-        contentColor = colors.onSecondaryContainer,
-        shape = MaterialTheme.shapes.extraLarge,
-        modifier = Modifier.fillMaxWidth(),
+        onClick = onClick,
+        shape = MaterialTheme.shapes.large,
+        color = if (selected) colors.secondaryContainer else colors.surfaceContainerLow,
+        contentColor = if (selected) colors.onSecondaryContainer else colors.onSurface,
+        border = if (selected) BorderStroke(1.dp, colors.secondary) else null,
+        modifier = Modifier.fillMaxWidth().widthIn(max = 720.dp),
     ) {
-        Box {
-            // Large faded quote mark in the corner
+        Row(modifier = Modifier.padding(20.dp)) {
             Icon(
                 painter = painterResource(Res.drawable.ic_format_quote),
                 contentDescription = null,
-                tint = colors.secondary.copy(alpha = 0.12f),
-                modifier = Modifier.align(Alignment.BottomEnd).size(140.dp).offset(x = 16.dp, y = 28.dp),
+                tint = colors.secondary,
+                modifier = Modifier.size(22.dp),
             )
-            Column(Modifier.padding(24.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier.size(48.dp).clip(CircleShape).background(colors.secondary.copy(alpha = 0.15f)),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Icon(painterResource(Res.drawable.ic_auto_awesome), null, tint = colors.secondary, modifier = Modifier.size(24.dp))
-                    }
-                    Spacer(Modifier.weight(1f))
-                    Row(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .background(colors.surface.copy(alpha = 0.6f))
-                            .padding(horizontal = 12.dp, vertical = 6.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    ) {
-                        Box(Modifier.size(6.dp).clip(CircleShape).background(colors.secondary))
-                        Text(stringResource(Res.string.home_coming_soon), style = MaterialTheme.typography.labelMedium)
-                    }
-                }
-                Spacer(Modifier.height(20.dp))
-                Text(stringResource(Res.string.home_placeholder_title), style = MaterialTheme.typography.headlineSmall)
-                Spacer(Modifier.height(6.dp))
-                Text(stringResource(Res.string.home_placeholder_text), style = MaterialTheme.typography.bodyLarge)
+            Spacer(Modifier.width(12.dp))
+            Column {
+                Text(
+                    text = quote.text,
+                    style = TextStyle(fontFamily = loraFontFamily(), fontSize = 17.sp, lineHeight = 25.sp),
+                    maxLines = 5,
+                )
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    text = "— ${quote.author}",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = if (selected) colors.onSecondaryContainer else colors.secondary,
+                )
             }
         }
     }
 }
 
 @Composable
-private fun SettingLabel(icon: DrawableResource, text: String) {
-    Row(
-        modifier = Modifier.padding(bottom = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
+internal fun LoadError(title: String, error: DataError, onRetry: () -> Unit, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.padding(24.dp).widthIn(max = 420.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Icon(painterResource(icon), null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(22.dp))
-        Spacer(Modifier.width(10.dp))
-        Text(text, style = MaterialTheme.typography.titleMedium)
+        Text(title, style = MaterialTheme.typography.titleMedium, textAlign = TextAlign.Center)
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = error.text(),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.height(14.dp))
+        FilledTonalButton(onClick = onRetry) { Text(stringResource(Res.string.common_retry)) }
     }
 }
+
+@Composable
+private fun CenteredBox(content: @Composable () -> Unit) {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { content() }
+}
+
+private fun Throwable.toDataError(): DataError = (this as? QuotesLoadException)?.error ?: DataError.Unknown(message)

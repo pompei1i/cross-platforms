@@ -18,9 +18,9 @@ import ua.edu.chnu.kkn.quotely.data.security.AuthTokens
 import ua.edu.chnu.kkn.quotely.data.security.TokenStorage
 import ua.edu.chnu.kkn.quotely.data.settings.AppSettings
 import ua.edu.chnu.kkn.quotely.domain.common.DataError
-import ua.edu.chnu.kkn.quotely.ui.home.HomeAction
-import ua.edu.chnu.kkn.quotely.ui.home.HomeEvent
-import ua.edu.chnu.kkn.quotely.ui.home.HomeViewModel
+import ua.edu.chnu.kkn.quotely.ui.settings.SettingsAction
+import ua.edu.chnu.kkn.quotely.ui.settings.SettingsEvent
+import ua.edu.chnu.kkn.quotely.ui.settings.SettingsViewModel
 import ua.edu.chnu.kkn.quotely.di.appModules
 import ua.edu.chnu.kkn.quotely.domain.auth.validation.ValidationError
 import ua.edu.chnu.kkn.quotely.domain.onboarding.OnboardingRepository
@@ -127,6 +127,22 @@ class ViewModelsTest : KoinTest {
     }
 
     @Test
+    fun quotesOpenAsDetailsThatReplaceEachOther() {
+        tokenStorage.tokens = AuthTokens("access-1", "refresh-1")
+        settings.isOnboardingCompleted = true
+        val viewModel = mainViewModel()
+
+        viewModel.onAction(MainAction.OpenQuote(5))
+        viewModel.onAction(MainAction.OpenQuote(7))
+        assertEquals(listOf(Route.Home, Route.QuoteDetail(7)), viewModel.backStack.toList())
+
+        viewModel.onAction(MainAction.NavigateBack)
+        assertEquals(listOf<Route>(Route.Home), viewModel.backStack.toList())
+        viewModel.onAction(MainAction.NavigateBack) // the root stays
+        assertEquals(listOf<Route>(Route.Home), viewModel.backStack.toList())
+    }
+
+    @Test
     fun preferencesArePersisted() {
         val viewModel = mainViewModel()
         viewModel.onAction(MainAction.ChangeLanguage("uk"))
@@ -173,14 +189,14 @@ class ViewModelsTest : KoinTest {
     }
 
     @Test
-    fun homeLoadsProfileAndSignsOut() = runTest {
+    fun settingsLoadProfileAndSignOut() = runTest {
         tokenStorage.tokens = AuthTokens(server.validAccessToken, server.validRefreshToken)
-        val viewModel: HomeViewModel = getKoin().get()
+        val viewModel: SettingsViewModel = getKoin().get()
         viewModel.state.first { it.user != null }
         assertEquals("Emily", viewModel.state.value.user?.firstName)
 
-        viewModel.onAction(HomeAction.SignOut)
-        assertEquals(HomeEvent.NavigateToLogin, viewModel.events.first())
+        viewModel.onAction(SettingsAction.SignOut)
+        assertEquals(SettingsEvent.NavigateToLogin, viewModel.events.first())
         assertNull(tokenStorage.tokens)
     }
 }

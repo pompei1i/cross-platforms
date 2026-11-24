@@ -31,9 +31,6 @@
     <!-- Головний екран -->
     <string name="home_title">Quotely</string>
     <string name="home_subtitle">Щоденні думки та мудрість</string>
-    <string name="home_coming_soon">Незабаром</string>
-    <string name="home_placeholder_title">Цитати вже в дорозі</string>
-    <string name="home_placeholder_text">Надихаючі думки з dummyjson.com/quotes заповнять вашу бібліотеку в наступній лабораторній.</string>
 
     <!-- Налаштування -->
     <string name="settings_title">Налаштування</string>
@@ -83,4 +80,15 @@
     <string name="home_signed_in_as">Ви увійшли як @%1$s</string>
     <string name="home_profile_error">Не вдалося завантажити профіль</string>
     <string name="settings_sign_out">Вийти</string>
+
+    <!-- Цитати -->
+    <string name="common_back">Назад</string>
+    <string name="home_refresh">Оновити</string>
+    <string name="quotes_error_title">Не вдалося завантажити цитати</string>
+    <string name="quotes_empty">Цитат поки немає</string>
+    <string name="quotes_end">Ви прочитали всі цитати ✦</string>
+    <string name="quote_number">Цитата №%1$d</string>
+    <string name="quote_error">Не вдалося завантажити цитату</string>
+    <string name="quote_placeholder_title">Оберіть цитату</string>
+    <string name="quote_placeholder_text">Виберіть цитату зі списку, щоб прочитати її тут.</string>
 </resources>

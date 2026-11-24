@@ -19,5 +19,7 @@ sealed interface MainAction {
     data object SignedIn : MainAction
     data object SignedOut : MainAction
     data object ShowOnboardingAgain : MainAction
+    data class OpenQuote(val quoteId: Int) : MainAction
+    data object OpenSettings : MainAction
     data object NavigateBack : MainAction
 }

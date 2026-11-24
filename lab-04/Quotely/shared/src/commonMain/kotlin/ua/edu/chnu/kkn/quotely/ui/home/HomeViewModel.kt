@@ -2,52 +2,35 @@ package ua.edu.chnu.kkn.quotely.ui.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.channels.Channel
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import ua.edu.chnu.kkn.quotely.domain.auth.GetCurrentUserUseCase
-import ua.edu.chnu.kkn.quotely.domain.auth.LogoutUseCase
-import ua.edu.chnu.kkn.quotely.domain.common.onFailure
-import ua.edu.chnu.kkn.quotely.domain.common.onSuccess
+import ua.edu.chnu.kkn.quotely.domain.quotes.GetQuotesPageUseCase
+import ua.edu.chnu.kkn.quotely.domain.quotes.Quote
+import ua.edu.chnu.kkn.quotely.ui.quotes.QuotesPagingSource
 
+/** Home page: the endless, lazily loaded list of quotes. */
 class HomeViewModel(
-    private val getCurrentUser: GetCurrentUserUseCase,
-    private val logout: LogoutUseCase,
+    getQuotesPage: GetQuotesPageUseCase,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(HomeState())
-    val state: StateFlow<HomeState> = _state.asStateFlow()
+    /** Cached in the ViewModel, so pages survive rotation and returning from the detail screen. */
+    val quotes: Flow<PagingData<Quote>> = Pager(
+        config = PagingConfig(
+            pageSize = PAGE_SIZE,
+            initialLoadSize = INITIAL_LOAD_SIZE,
+            prefetchDistance = PREFETCH_DISTANCE,
+            enablePlaceholders = false,
+        ),
+        // A new PagingSource for every refresh(): an invalidated source can't be reused
+        pagingSourceFactory = { QuotesPagingSource(getQuotesPage) },
+    ).flow.cachedIn(viewModelScope)
 
-    private val _events = Channel<HomeEvent>(Channel.BUFFERED)
-    val events: Flow<HomeEvent> = _events.receiveAsFlow()
-
-    init {
-        loadProfile()
-    }
-
-    fun onAction(action: HomeAction) {
-        when (action) {
-            HomeAction.RetryProfile -> loadProfile()
-            HomeAction.SignOut -> viewModelScope.launch {
-                logout()
-                _events.send(HomeEvent.NavigateToLogin)
-            }
-        }
-    }
-
-    /** An authorized call: an expired access token is refreshed by the HTTP client transparently. */
-    private fun loadProfile() {
-        _state.update { it.copy(isLoading = true, error = null) }
-        viewModelScope.launch {
-            getCurrentUser()
-                .onSuccess { user -> _state.update { it.copy(user = user) } }
-                .onFailure { error -> _state.update { it.copy(error = error) } }
-            _state.update { it.copy(isLoading = false) }
-        }
+    companion object {
+        const val PAGE_SIZE = 20
+        const val INITIAL_LOAD_SIZE = PAGE_SIZE * 2
+        const val PREFETCH_DISTANCE = 5
     }
 }

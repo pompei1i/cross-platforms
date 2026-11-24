@@ -18,7 +18,16 @@ import ua.edu.chnu.kkn.quotely.domain.auth.IsAuthorizedUseCase
 import ua.edu.chnu.kkn.quotely.domain.auth.LoginUseCase
 import ua.edu.chnu.kkn.quotely.domain.auth.LogoutUseCase
 import ua.edu.chnu.kkn.quotely.domain.auth.ObserveSessionExpiredUseCase
+import ua.edu.chnu.kkn.quotely.data.quotes.AppQuotesApiService
+import ua.edu.chnu.kkn.quotely.data.quotes.AppQuotesRepository
+import ua.edu.chnu.kkn.quotely.data.quotes.QuotesApiService
+import ua.edu.chnu.kkn.quotely.domain.quotes.GetQuoteUseCase
+import ua.edu.chnu.kkn.quotely.domain.quotes.GetQuotesPageUseCase
+import ua.edu.chnu.kkn.quotely.domain.quotes.QuotesRepository
 import ua.edu.chnu.kkn.quotely.ui.home.HomeViewModel
+import ua.edu.chnu.kkn.quotely.ui.quotes.QuoteDetailViewModel
+import ua.edu.chnu.kkn.quotely.ui.settings.SettingsViewModel
+import org.koin.core.module.dsl.viewModel
 import ua.edu.chnu.kkn.quotely.data.onboarding.AppOnboardingRepository
 import ua.edu.chnu.kkn.quotely.data.settings.AppPreferencesRepository
 import ua.edu.chnu.kkn.quotely.data.settings.AppSettings
@@ -48,6 +57,8 @@ val networkModule = module {
     single { createHttpClient(engine = get(), tokenStorage = get(), sessionEvents = get()) }
     singleOf(::AppAuthApiService) { bind<AuthApiService>() }
     singleOf(::AppAuthRepository) { bind<AuthRepository>() }
+    singleOf(::AppQuotesApiService) { bind<QuotesApiService>() }
+    singleOf(::AppQuotesRepository) { bind<QuotesRepository>() }
 }
 
 val domainModule = module {
@@ -56,6 +67,8 @@ val domainModule = module {
     factoryOf(::IsAuthorizedUseCase)
     factoryOf(::GetCurrentUserUseCase)
     factoryOf(::ObserveSessionExpiredUseCase)
+    factoryOf(::GetQuotesPageUseCase)
+    factoryOf(::GetQuoteUseCase)
     factoryOf(::CompleteOnboardingUseCase)
     factoryOf(::IsOnboardingCompletedUseCase)
     factoryOf(::ResetOnboardingUseCase)
@@ -71,6 +84,8 @@ val presentationModule = module {
     viewModelOf(::OnboardingViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::HomeViewModel)
+    viewModelOf(::SettingsViewModel)
+    viewModel { params -> QuoteDetailViewModel(quoteId = params.get(), getQuote = get()) }
 }
 
 val appModules = listOf(platformModule, dataModule, networkModule, domainModule, presentationModule)

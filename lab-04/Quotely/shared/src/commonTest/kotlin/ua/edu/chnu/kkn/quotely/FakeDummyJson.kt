@@ -31,6 +31,8 @@ class FakeDummyJson {
     var validRefreshToken = "refresh-1"
     var refreshCalls = 0
     var rejectRefresh = false
+    var totalQuotes = 45
+    var failQuotes = false
     val requests = mutableListOf<String>()
 
     val engine = MockEngine { request -> handle(request) }
@@ -63,6 +65,21 @@ class FakeDummyJson {
             path.endsWith("auth/me") ->
                 if (request.headers[HttpHeaders.Authorization] == "Bearer $validAccessToken") json(userJson())
                 else json("""{"message":"Token Expired!"}""", HttpStatusCode.Unauthorized)
+
+            path.endsWith("quotes") -> {
+                if (failQuotes) return json("""{"message":"Down"}""", HttpStatusCode.ServiceUnavailable)
+                val limit = request.url.parameters["limit"]!!.toInt()
+                val skip = request.url.parameters["skip"]!!.toInt()
+                val ids = (skip + 1..minOf(skip + limit, totalQuotes)).toList()
+                val items = ids.joinToString(",") { """{"id":$it,"quote":"Quote $it","author":"Author $it"}""" }
+                json("""{"quotes":[$items],"total":$totalQuotes,"skip":$skip,"limit":$limit}""")
+            }
+
+            path.contains("quotes/") -> {
+                val id = path.substringAfterLast('/').toInt()
+                if (id in 1..totalQuotes) json("""{"id":$id,"quote":"Quote $id","author":"Author $id"}""")
+                else json("""{"message":"Quote with id '$id' not found"}""", HttpStatusCode.NotFound)
+            }
 
             else -> json("""{"message":"Not found"}""", HttpStatusCode.NotFound)
         }

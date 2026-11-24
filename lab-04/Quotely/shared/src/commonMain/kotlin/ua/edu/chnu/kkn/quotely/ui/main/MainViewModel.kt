@@ -79,7 +79,19 @@ class MainViewModel(
                 resetOnboarding()
                 replaceBackStack(Route.Onboarding)
             }
+            is MainAction.OpenQuote -> openQuote(action.quoteId)
+            MainAction.OpenSettings -> if (backStack.lastOrNull() != Route.Settings) backStack.add(Route.Settings)
             MainAction.NavigateBack -> if (backStack.size > 1) backStack.removeAt(backStack.lastIndex)
+        }
+    }
+
+    /** Picking another quote swaps the open detail instead of stacking details on top of each other. */
+    private fun openQuote(quoteId: Int) {
+        val route = Route.QuoteDetail(quoteId)
+        when (backStack.lastOrNull()) {
+            route -> Unit
+            is Route.QuoteDetail -> backStack[backStack.lastIndex] = route
+            else -> backStack.add(route)
         }
     }
 

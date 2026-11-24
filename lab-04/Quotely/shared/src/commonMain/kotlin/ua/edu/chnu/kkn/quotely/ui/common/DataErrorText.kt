@@ -1,6 +1,8 @@
 package ua.edu.chnu.kkn.quotely.ui.common
 
+import androidx.compose.runtime.Composable
 import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.stringResource
 import ua.edu.chnu.kkn.quotely.domain.common.DataError
 import ua.edu.chnu.kkn.quotely.resources.Res
 import ua.edu.chnu.kkn.quotely.resources.error_bad_data
@@ -21,4 +23,17 @@ suspend fun DataError.message(): String = when (this) {
     is DataError.Server -> getString(Res.string.error_server, code)
     is DataError.Http -> message ?: getString(Res.string.error_unknown)
     is DataError.Unknown -> getString(Res.string.error_unknown)
+}
+
+/** Composable twin of [message] for errors that are part of the screen state. */
+@Composable
+fun DataError.text(): String = when (this) {
+    DataError.NoInternet -> stringResource(Res.string.error_no_internet)
+    DataError.Timeout -> stringResource(Res.string.error_timeout)
+    DataError.InvalidCredentials -> stringResource(Res.string.error_invalid_credentials)
+    DataError.Unauthorized -> stringResource(Res.string.error_session_expired)
+    DataError.Serialization -> stringResource(Res.string.error_bad_data)
+    is DataError.Server -> stringResource(Res.string.error_server, code)
+    is DataError.Http -> message ?: stringResource(Res.string.error_unknown)
+    is DataError.Unknown -> stringResource(Res.string.error_unknown)
 }
