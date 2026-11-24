@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Quotely - Settings</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Newsreader (editorial serif), Lora, Manrope -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500;1,600&amp;family=Manrope:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,500;1,6..72,600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary": "#ffffff",
+            "on-primary-fixed": "#021257",
+            "tertiary-fixed-dim": "#ffb1c8",
+            "primary": "#253273",
+            "tertiary": "#5e2439",
+            "secondary-container": "#fecd72",
+            "tertiary-fixed": "#ffd9e2",
+            "secondary": "#7b5800",
+            "on-secondary": "#ffffff",
+            "inverse-primary": "#b9c3ff",
+            "secondary-fixed": "#ffdea6",
+            "on-primary-fixed-variant": "#354283",
+            "on-tertiary-container": "#fca9c2",
+            "surface-variant": "#e5e2dd",
+            "inverse-surface": "#31302d",
+            "on-background": "#1c1c19",
+            "surface": "#fcf9f4",
+            "on-secondary-fixed-variant": "#5d4200",
+            "secondary-fixed-dim": "#efbf65",
+            "surface-dim": "#dcdad5",
+            "primary-container": "#3d4a8c",
+            "inverse-on-surface": "#f3f0eb",
+            "on-secondary-container": "#785600",
+            "surface-tint": "#4d5a9d",
+            "on-surface": "#1c1c19",
+            "surface-container-highest": "#e5e2dd",
+            "outline": "#767681",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "surface-container-lowest": "#ffffff",
+            "surface-container": "#f0ede9",
+            "on-tertiary-fixed-variant": "#703348",
+            "on-secondary-fixed": "#271900",
+            "on-primary": "#ffffff",
+            "primary-fixed-dim": "#b9c3ff",
+            "on-tertiary-fixed": "#3a071d",
+            "on-surface-variant": "#454650",
+            "error": "#ba1a1a",
+            "surface-bright": "#fcf9f4",
+            "outline-variant": "#c6c5d2",
+            "on-primary-container": "#b2bdff",
+            "tertiary-container": "#793b50",
+            "background": "#fcf9f4",
+            "surface-container-high": "#ebe8e3",
+            "primary-fixed": "#dee1ff",
+            "on-error-container": "#93000a",
+            "surface-container-low": "#f6f3ee"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter-tablet": "1.5rem",
+            "space-xs": "0.25rem",
+            "margin-tablet": "2rem",
+            "space-xl": "2rem",
+            "gutter": "1rem",
+            "space-2xl": "3rem",
+            "margin": "1.25rem",
+            "space-lg": "1.5rem",
+            "margin-desktop": "3rem",
+            "space-md": "1rem",
+            "gutter-desktop": "2rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "label-lg": ["Manrope"],
+            "headline-lg-mobile": ["Newsreader"],
+            "display-lg": ["Newsreader"],
+            "headline-sm": ["Newsreader"],
+            "label-md": ["Manrope"],
+            "label-sm": ["Manrope"],
+            "body-md": ["Manrope"],
+            "headline-lg": ["Newsreader"],
+            "display-lg-mobile": ["Newsreader"],
+            "body-lg": ["Manrope"],
+            "quote-body": ["Newsreader"],
+            "quote-featured": ["Newsreader"],
+            "headline-md": ["Newsreader"],
+            "quote-featured-mobile": ["Newsreader"],
+            "body-sm": ["Manrope"],
+            "serif-display": ["Lora", "Newsreader", "serif"]
+          },
+          "fontSize": {
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["26px", { "lineHeight": "34px", "fontWeight": "600" }],
+            "display-lg": ["44px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.03em", "fontWeight": "500" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+            "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "quote-body": ["19px", { "lineHeight": "30px", "fontWeight": "600" }],
+            "quote-featured": ["26px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "quote-featured-mobile": ["21px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    body {
+      background-color: #FBF8F3;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface flex flex-col justify-between items-center min-h-screen selection:bg-secondary-fixed selection:text-on-secondary-fixed" style="background-color: #13131A; min-height: max(884px, 100dvh);">
+<!-- Mobile Frame Container (Max 390px x 844px mobile viewport footprint) -->
+<div class="w-full max-w-[390px] min-h-screen flex flex-col bg-surface relative pb-28" style="background-color: #13131A;">
+<!-- Top App Bar (Shared Component Anchor) -->
+<header class="flex justify-between items-center w-full px-margin h-16 max-w-screen-md mx-auto bg-surface"><div class="flex items-center space-x-2"><button aria-label="Translate icon" class="w-10 h-10 flex items-center justify-center rounded-full text-[#B9C3FF] hover:bg-[#1F1E28] active:scale-95 transition-transform duration-150"><span class="material-symbols-outlined text-[22px]">translate</span></button><span class="font-headline-md text-headline-md font-semibold text-[#E4E1E9]">Quotely</span></div><button class="text-[#A5A3B0] font-label-lg text-label-lg hover:bg-[#1F1E28] px-3 py-1.5 rounded-full active:scale-95 transition-transform duration-150">Skip</button></header>
+<!-- Main Editorial Content Canvas -->
+<main class="flex-1 px-margin space-y-6 pt-2">
+<!-- Prominent Literary Hero Title -->
+<section class="space-y-1"><h1 class="font-headline-lg-mobile text-headline-lg-mobile text-[#E4E1E9] tracking-tight" style="font-family: 'Lora', serif; font-weight: 600;">Quotely</h1><p class="font-body-md text-body-md text-[#A5A3B0] tracking-normal">Daily thoughts &amp; wisdom</p></section>
+<!-- Highlighted Amber Card -->
+<section class="relative text-[#FFE08B] rounded-[28px] p-6 shadow-sm overflow-hidden transition-all duration-200" style="background-color: #2F2200; border: 1px solid #594000;"><div class="absolute -right-2 -bottom-4 pointer-events-none select-none text-[#594000]/60"><span class="material-symbols-outlined text-[100px]" style="font-variation-settings: 'FILL' 1;">format_quote</span></div><div class="relative z-10 space-y-3"><div class="flex items-center justify-between"><div class="w-10 h-10 rounded-full flex items-center justify-center text-[#F5BE48]" style="background-color: #423000;"><span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span></div><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[#F5BE48] font-label-sm text-label-sm shadow-xs" style="background-color: #1F1700; border: 1px solid #594000;"><span class="w-1.5 h-1.5 rounded-full bg-[#F5BE48] animate-pulse"></span>Syncing library...</span></div><div class="space-y-1.5 pt-1"><h2 class="text-[20px] leading-[26px] font-semibold text-[#FFE08B]" style="font-family: 'Lora', serif;">Quotes are on their way</h2><p class="font-body-md text-body-md leading-relaxed text-[#F5BE48]/90">We're curating inspiring thoughts from dummyjson.com/quotes to populate your daily library.</p></div></div></section>
+<!-- Settings Section -->
+<section class="space-y-5 pt-2"><div class="space-y-0.5 pb-2" style="border-bottom: 1px solid #282734;"><h2 class="font-headline-sm text-headline-sm text-[#E4E1E9]" style="font-family: 'Lora', serif;">Settings</h2><p class="font-body-sm text-body-sm text-[#A5A3B0] font-label-md">Preferences &amp; Appearance</p></div><div class="space-y-2.5"><div class="flex items-center justify-between"><span class="font-label-lg text-label-lg text-[#E4E1E9] flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-[#B9C3FF]">language</span>Language <span class="text-[#A5A3B0] font-normal text-body-sm">(Мова)</span></span></div><div aria-label="Language options" class="p-1 rounded-full flex items-center gap-1 w-full" role="group" style="background-color: #1F1E28;"><button class="flex-1 py-2 px-4 rounded-full font-label-md text-label-md flex items-center justify-center gap-1.5 shadow-sm active:scale-95 transition-all duration-150" style="background-color: #B9C3FF; color: #0C1A4A;"><span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check</span>English</button><button class="flex-1 py-2 px-4 rounded-full text-[#C7C5D0] font-label-md text-label-md hover:bg-[#282734] flex items-center justify-center active:scale-95 transition-all duration-150">Українська</button></div></div><div class="space-y-2.5"><div class="flex items-center justify-between"><span class="font-label-lg text-label-lg text-[#E4E1E9] flex items-center gap-2"><span class="material-symbols-outlined text-[18px] text-[#B9C3FF]">palette</span>Theme</span></div><div aria-label="Theme selector" class="p-1 rounded-full flex items-center gap-1 w-full" role="group" style="background-color: #1F1E28;"><button class="flex-1 py-2 px-2 rounded-full text-[#C7C5D0] font-label-md text-label-md hover:bg-[#282734] flex items-center justify-center gap-1 active:scale-95 transition-all duration-150"><span class="material-symbols-outlined text-[16px]">settings_brightness</span>System</button><button class="flex-1 py-2 px-2 rounded-full text-[#C7C5D0] font-label-md text-label-md hover:bg-[#282734] flex items-center justify-center gap-1 active:scale-95 transition-all duration-150"><span class="material-symbols-outlined text-[16px]">light_mode</span>Light</button><button class="flex-1 py-2 px-2 rounded-full font-label-md text-label-md flex items-center justify-center gap-1 shadow-sm active:scale-95 transition-all duration-150" style="background-color: #B9C3FF; color: #0C1A4A;"><span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">dark_mode</span>Dark</button></div></div><div class="pt-2"><button class="w-full py-3.5 px-6 rounded-full border border-[#B9C3FF]/30 text-[#B9C3FF] hover:bg-[#B9C3FF]/10 active:scale-95 transition-all duration-150 font-label-lg text-label-lg flex items-center justify-center gap-2.5"><span class="material-symbols-outlined text-[20px]">history</span>Show onboarding again</button></div></section>
+</main>
+<!-- Bottom Navigation Bar (Shared Component Anchor: Destination Count 3: format_quote, collections_bookmark, settings) -->
+<!-- Settings tab is determined ACTIVE as per semantic context of this screen -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 px-gutter" style="background-color: #1B1A24; border-top: 1px solid #282734;"><div class="w-full max-w-[390px] flex justify-around items-center mx-auto"><button aria-label="Quotes" class="flex items-center justify-center text-[#8E8F9A] w-16 h-8 hover:bg-[#252430] rounded-full active:scale-95 transition-transform duration-150"><span class="material-symbols-outlined">format_quote</span></button><button aria-label="Collections Bookmark" class="flex items-center justify-center text-[#8E8F9A] w-16 h-8 hover:bg-[#252430] rounded-full active:scale-95 transition-transform duration-150"><span class="material-symbols-outlined">collections_bookmark</span></button><button aria-label="Settings" class="flex items-center justify-center rounded-full w-16 h-8 active:scale-95 transition-transform duration-150" style="background-color: #B9C3FF; color: #13131A;"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span></button></div></nav>
+</div>
+</body></html>

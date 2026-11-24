@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Quotely Onboarding - Slide 3</title>
+<!-- Google Fonts: Newsreader (Editorial Serif) & Manrope (Geometric Clean Sans) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary": "#ffffff",
+            "on-primary-fixed": "#021257",
+            "tertiary-fixed-dim": "#ffb1c8",
+            "primary": "#253273",
+            "tertiary": "#5e2439",
+            "secondary-container": "#fecd72",
+            "tertiary-fixed": "#ffd9e2",
+            "secondary": "#7b5800",
+            "on-secondary": "#ffffff",
+            "inverse-primary": "#b9c3ff",
+            "secondary-fixed": "#ffdea6",
+            "on-primary-fixed-variant": "#354283",
+            "on-tertiary-container": "#fca9c2",
+            "surface-variant": "#e5e2dd",
+            "inverse-surface": "#31302d",
+            "on-background": "#1c1c19",
+            "surface": "#fcf9f4",
+            "on-secondary-fixed-variant": "#5d4200",
+            "secondary-fixed-dim": "#efbf65",
+            "surface-dim": "#dcdad5",
+            "primary-container": "#3d4a8c",
+            "inverse-on-surface": "#f3f0eb",
+            "on-secondary-container": "#785600",
+            "surface-tint": "#4d5a9d",
+            "on-surface": "#1c1c19",
+            "surface-container-highest": "#e5e2dd",
+            "outline": "#767681",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "surface-container-lowest": "#ffffff",
+            "surface-container": "#f0ede9",
+            "on-tertiary-fixed-variant": "#703348",
+            "on-secondary-fixed": "#271900",
+            "on-primary": "#ffffff",
+            "primary-fixed-dim": "#b9c3ff",
+            "on-tertiary-fixed": "#3a071d",
+            "on-surface-variant": "#454650",
+            "error": "#ba1a1a",
+            "surface-bright": "#fcf9f4",
+            "outline-variant": "#c6c5d2",
+            "on-primary-container": "#b2bdff",
+            "tertiary-container": "#ffd9e2",
+            "background": "#fcf9f4",
+            "surface-container-high": "#ebe8e3",
+            "primary-fixed": "#dee1ff",
+            "on-error-container": "#93000a",
+            "surface-container-low": "#f6f3ee"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter-tablet": "1.5rem",
+            "space-xs": "0.25rem",
+            "margin-tablet": "2rem",
+            "space-xl": "2rem",
+            "gutter": "1rem",
+            "space-2xl": "3rem",
+            "margin": "1.25rem",
+            "space-lg": "1.5rem",
+            "margin-desktop": "3rem",
+            "space-md": "1rem",
+            "gutter-desktop": "2rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "label-lg": ["Manrope"],
+            "headline-lg-mobile": ["Newsreader"],
+            "display-lg": ["Newsreader"],
+            "headline-sm": ["Newsreader"],
+            "label-md": ["Manrope"],
+            "label-sm": ["Manrope"],
+            "body-md": ["Manrope"],
+            "headline-lg": ["Newsreader"],
+            "display-lg-mobile": ["Newsreader"],
+            "body-lg": ["Manrope"],
+            "quote-body": ["Newsreader"],
+            "quote-featured": ["Newsreader"],
+            "headline-md": ["Newsreader"],
+            "quote-featured-mobile": ["Newsreader"],
+            "body-sm": ["Manrope"]
+          },
+          "fontSize": {
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["26px", { "lineHeight": "34px", "fontWeight": "600" }],
+            "display-lg": ["44px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.03em", "fontWeight": "500" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+            "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "quote-body": ["19px", { "lineHeight": "30px", "fontWeight": "600" }],
+            "quote-featured": ["26px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "quote-featured-mobile": ["21px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-surface-variant flex items-center justify-center min-h-screen p-0 sm:p-4 select-none antialiased">
+<!-- Mobile Frame Container (390 x 844 viewport simulation) -->
+<main class="w-full max-w-[390px] h-[844px] bg-background text-on-surface flex flex-col justify-between relative overflow-hidden shadow-2xl rounded-[40px] sm:border-[8px] sm:border-surface-variant">
+<!-- Top App Bar / Status & Actions Header -->
+<header class="w-full px-margin pt-12 pb-4 flex justify-between items-center z-10">
+<!-- Segmented Language Switcher -->
+<div class="flex items-center bg-surface-container rounded-full p-1 border border-outline-variant/30">
+<button aria-label="Switch to English" class="px-3 py-1 rounded-full bg-primary-container text-on-primary text-label-md font-label-md shadow-sm transition-all duration-200" type="button">
+          EN
+        </button>
+<button aria-label="Switch to Ukrainian" class="px-3 py-1 rounded-full text-on-surface-variant hover:text-on-surface text-label-md font-label-md transition-all duration-200" type="button">
+          UK
+        </button>
+</div>
+<!-- App Brand Anchor -->
+<span class="font-headline-md text-headline-md font-semibold text-primary tracking-tight">
+        Quotely
+      </span>
+<!-- Skip Action Button -->
+<button class="text-label-lg font-label-lg text-on-surface-variant hover:text-primary transition-colors py-1 px-2.5 rounded-full hover:bg-surface-container active:scale-95 duration-150" type="button">
+        Skip
+      </button>
+</header>
+<!-- Center Literary Editorial Content Canvas -->
+<section class="flex-1 flex flex-col items-center justify-center px-margin text-center -mt-6">
+<!-- Ambient Decorative Aura Backdrop -->
+<div class="relative mb-10 flex items-center justify-center">
+<!-- Diffused Subtle Glow Ring -->
+<div class="absolute w-48 h-48 rounded-full bg-tertiary-fixed opacity-40 blur-2xl pointer-events-none"></div>
+<!-- Center Dusty Rose Circular Badge (~140px diameter) -->
+<div class="w-[140px] h-[140px] rounded-full bg-tertiary-fixed flex items-center justify-center shadow-sm relative z-10 transition-transform duration-300 hover:scale-105">
+<span class="material-symbols-outlined text-[64px] text-tertiary select-none" data-icon="shuffle">
+            shuffle
+          </span>
+</div>
+<!-- Scholarly Archival Sparkle Accents -->
+<div class="absolute -top-2 -right-1 w-8 h-8 rounded-full bg-surface-container flex items-center justify-center border border-outline-variant/30 shadow-xs z-20">
+<span class="material-symbols-outlined text-[16px] text-secondary" data-icon="auto_awesome">
+            auto_awesome
+          </span>
+</div>
+<div class="absolute -bottom-1 -left-2 w-7 h-7 rounded-full bg-secondary-container/40 flex items-center justify-center border border-outline-variant/20 shadow-xs z-20">
+<span class="material-symbols-outlined text-[14px] text-secondary" data-icon="format_quote">
+            format_quote
+          </span>
+</div>
+</div>
+<!-- Literary Editorial Serif Headline -->
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-normal mb-4">
+        Quote of the moment
+      </h1>
+<!-- Description in Manrope -->
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-[280px] mx-auto leading-relaxed">
+        Let serendipity strike with an unexpected spark of insight tailored for your present mood.
+      </p>
+<!-- Soft Tactile Excerpt Preview Card -->
+<div class="mt-8 mx-auto w-full max-w-[310px] bg-surface-container rounded-DEFAULT p-4 border border-outline-variant/20 shadow-sm flex items-center gap-3 text-left">
+<div class="w-9 h-9 rounded-full bg-primary-fixed flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[20px] text-primary" data-icon="lightbulb">
+            lightbulb
+          </span>
+</div>
+<div class="overflow-hidden">
+<p class="font-label-sm text-label-sm text-secondary font-semibold uppercase tracking-wider">Serendipitous Discovery</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Fresh daily quotes curated to reflect quiet contemplation.</p>
+</div>
+</div>
+</section>
+<!-- Bottom Pager Controls & Linear Progression -->
+<footer class="w-full px-margin pb-10 flex flex-col gap-6 z-10">
+<!-- Pager Status Stack: Counter & Indicator Dots -->
+<div class="flex flex-col items-center gap-2.5">
+<!-- Numerical Counter -->
+<span class="font-label-sm text-label-sm text-on-surface-variant tracking-wider">
+          3 of 4
+        </span>
+<!-- Page Indicator Track -->
+<div aria-label="Onboarding Progress" class="flex items-center gap-2" role="tablist">
+<!-- Dot 1: Inactive -->
+<span aria-label="Step 1" class="w-2 h-2 rounded-full bg-surface-container-highest transition-all duration-200"></span>
+<!-- Dot 2: Inactive -->
+<span aria-label="Step 2" class="w-2 h-2 rounded-full bg-surface-container-highest transition-all duration-200"></span>
+<!-- Dot 3: Active Wider Indigo Pill (#3D4A8C / primary-container) -->
+<span aria-current="step" aria-label="Step 3" class="w-7 h-2 rounded-full bg-primary-container transition-all duration-300"></span>
+<!-- Dot 4: Inactive -->
+<span aria-label="Step 4" class="w-2 h-2 rounded-full bg-surface-container-highest transition-all duration-200"></span>
+</div>
+</div>
+<!-- Action Navigation Row -->
+<nav aria-label="Onboarding Navigation" class="flex items-center justify-between w-full pt-1">
+<!-- Back Text Button -->
+<button class="py-3 px-5 rounded-full text-label-lg font-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all duration-150 active:scale-95 flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_back">
+            arrow_back
+          </span>
+          Back
+        </button>
+<!-- Next Filled Pill Button -->
+<button class="h-12 px-8 rounded-full bg-primary text-on-primary text-label-lg font-label-lg shadow-sm hover:opacity-95 active:scale-95 transition-all duration-150 flex items-center gap-2" type="button">
+<span>Next</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">
+            arrow_forward
+          </span>
+</button>
+</nav>
+</footer>
+</main>
+</body></html>

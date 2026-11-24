@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="uk"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Quotely - Onboarding Ukrainian</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500;1,600&amp;family=Manrope:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,500;1,6..72,600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary": "#ffffff",
+            "on-primary-fixed": "#021257",
+            "tertiary-fixed-dim": "#ffb1c8",
+            "primary": "#253273",
+            "tertiary": "#5e2439",
+            "secondary-container": "#fecd72",
+            "tertiary-fixed": "#ffd9e2",
+            "secondary": "#7b5800",
+            "on-secondary": "#ffffff",
+            "inverse-primary": "#b9c3ff",
+            "secondary-fixed": "#ffdea6",
+            "on-primary-fixed-variant": "#354283",
+            "on-tertiary-container": "#fca9c2",
+            "surface-variant": "#e5e2dd",
+            "inverse-surface": "#31302d",
+            "on-background": "#1c1c19",
+            "surface": "#fcf9f4",
+            "on-secondary-fixed-variant": "#5d4200",
+            "secondary-fixed-dim": "#efbf65",
+            "surface-dim": "#dcdad5",
+            "primary-container": "#3d4a8c",
+            "inverse-on-surface": "#f3f0eb",
+            "on-secondary-container": "#785600",
+            "surface-tint": "#4d5a9d",
+            "on-surface": "#1c1c19",
+            "surface-container-highest": "#e5e2dd",
+            "outline": "#767681",
+            "on-error": "#ffffff",
+            "error-container": "#ffdad6",
+            "surface-container-lowest": "#ffffff",
+            "surface-container": "#f0ede9",
+            "on-tertiary-fixed-variant": "#703348",
+            "on-secondary-fixed": "#271900",
+            "on-primary": "#ffffff",
+            "primary-fixed-dim": "#b9c3ff",
+            "on-tertiary-fixed": "#3a071d",
+            "on-surface-variant": "#454650",
+            "error": "#ba1a1a",
+            "surface-bright": "#fcf9f4",
+            "outline-variant": "#c6c5d2",
+            "on-primary-container": "#b2bdff",
+            "tertiary-container": "#793b50",
+            "background": "#fcf9f4",
+            "surface-container-high": "#ebe8e3",
+            "primary-fixed": "#dee1ff",
+            "on-error-container": "#93000a",
+            "surface-container-low": "#f6f3ee"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter-tablet": "1.5rem",
+            "space-xs": "0.25rem",
+            "margin-tablet": "2rem",
+            "space-xl": "2rem",
+            "gutter": "1rem",
+            "space-2xl": "3rem",
+            "margin": "1.25rem",
+            "space-lg": "1.5rem",
+            "margin-desktop": "3rem",
+            "space-md": "1rem",
+            "gutter-desktop": "2rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "label-lg": ["Manrope", "sans-serif"],
+            "headline-lg-mobile": ["Lora", "Newsreader", "serif"],
+            "display-lg": ["Lora", "Newsreader", "serif"],
+            "headline-sm": ["Lora", "Newsreader", "serif"],
+            "label-md": ["Manrope", "sans-serif"],
+            "label-sm": ["Manrope", "sans-serif"],
+            "body-md": ["Manrope", "sans-serif"],
+            "headline-lg": ["Lora", "Newsreader", "serif"],
+            "display-lg-mobile": ["Lora", "Newsreader", "serif"],
+            "body-lg": ["Manrope", "sans-serif"],
+            "quote-body": ["Lora", "Newsreader", "serif"],
+            "quote-featured": ["Lora", "Newsreader", "serif"],
+            "headline-md": ["Lora", "Newsreader", "serif"],
+            "quote-featured-mobile": ["Lora", "Newsreader", "serif"],
+            "body-sm": ["Manrope", "sans-serif"]
+          },
+          "fontSize": {
+            "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["26px", { "lineHeight": "34px", "fontWeight": "600" }],
+            "display-lg": ["44px", { "lineHeight": "52px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.03em", "fontWeight": "500" }],
+            "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+            "display-lg-mobile": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "quote-body": ["19px", { "lineHeight": "30px", "fontWeight": "600" }],
+            "quote-featured": ["26px", { "lineHeight": "38px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "quote-featured-mobile": ["21px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#e9e5de] font-body-md text-on-surface antialiased flex items-center justify-center min-h-screen p-0 sm:p-4 select-none">
+<!-- Mobile Frame Container (390 x 844 target canvas) -->
+<main class="w-full max-w-[390px] h-[844px] bg-surface flex flex-col justify-between relative overflow-hidden shadow-2xl sm:rounded-[44px] border border-outline-variant/20">
+<!-- Top Bar -->
+<header class="w-full pt-4 px-margin flex items-center justify-between z-20">
+<!-- Language Switcher: EN | UK -->
+<nav aria-label="Language Selector" class="inline-flex items-center p-1 bg-surface-container rounded-full">
+<button class="px-3 py-1 text-on-surface-variant font-label-md text-label-md rounded-full transition-colors hover:text-primary" type="button">
+          EN
+        </button>
+<button class="px-3 py-1 bg-primary text-on-primary font-label-md text-label-md rounded-full shadow-sm" type="button">
+          UK
+        </button>
+</nav>
+<!-- Skip Button -->
+<button class="px-3 py-1.5 text-on-surface-variant hover:text-primary font-label-lg text-label-lg transition-transform active:scale-95" type="button">
+        Пропустити
+      </button>
+</header>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col justify-center px-margin py-2">
+<!-- Center Quote Card -->
+<section aria-label="Quote of inspiration" class="relative w-full rounded-[28px] bg-primary-fixed p-7 shadow-sm flex flex-col justify-between overflow-hidden">
+<!-- Ambient Decorative Motif -->
+<div class="absolute -right-6 -bottom-8 select-none pointer-events-none opacity-10">
+<span class="material-symbols-outlined text-[140px] text-primary" data-icon="format_quote">format_quote</span>
+</div>
+<div>
+<!-- Large Indigo Quote Icon -->
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-5">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="format_quote" data-weight="fill" style="font-variation-settings: 'FILL' 1;">format_quote</span>
+</div>
+<!-- Ukrainian Quote Text -->
+<blockquote class="font-quote-featured-mobile text-quote-featured-mobile italic text-primary leading-relaxed font-semibold mb-6">
+            «Єдиний спосіб робити великі справи — любити те, що ви робите.»
+          </blockquote>
+</div>
+<!-- Author Attribution -->
+<div class="flex items-center justify-between pt-2 border-t border-primary/10">
+<cite class="not-italic font-label-lg text-label-lg text-on-primary-fixed-variant tracking-wide font-medium">
+            — Стів Джобс
+          </cite>
+<span class="material-symbols-outlined text-primary/60 text-lg" data-icon="auto_stories">auto_stories</span>
+</div>
+</section>
+<!-- Editorial Intro Copy Below Card -->
+<div class="mt-8 text-center px-1">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-3 tracking-tight">
+          Ласкаво просимо до Quotely
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-[320px] mx-auto leading-relaxed">
+          Відкрийте для себе вічну мудрість, глибокі думки та щоденне натхнення для хвилин тихого роздуму.
+        </p>
+</div>
+</div>
+<!-- Bottom Controls & Pager -->
+<footer class="w-full px-margin pb-8 pt-2 flex flex-col gap-4">
+<!-- Pager Counter and Indicator Dots -->
+<div class="flex items-center justify-between px-1">
+<!-- Progress Counter -->
+<span class="font-label-md text-label-md text-on-surface-variant tabular-nums">
+          1 з 4
+        </span>
+<!-- Dots Indicator -->
+<div aria-label="Progress dots" class="flex items-center gap-1.5" role="tablist">
+<!-- Active Pill -->
+<span aria-current="step" class="w-6 h-2 rounded-full bg-primary-container transition-all"></span>
+<!-- Inactive Dots -->
+<span class="w-2 h-2 rounded-full bg-surface-container-highest"></span>
+<span class="w-2 h-2 rounded-full bg-surface-container-highest"></span>
+<span class="w-2 h-2 rounded-full bg-surface-container-highest"></span>
+</div>
+<!-- Spacer for balanced alignment -->
+<div class="w-8"></div>
+</div>
+<!-- Action Row -->
+<div class="flex items-center justify-between pt-1">
+<!-- Left placeholder/spacer for visual balance -->
+<div aria-hidden="true" class="w-12 h-12 invisible"></div>
+<!-- Next Button (Filled Primary Pill) -->
+<button class="h-12 px-6 rounded-full bg-primary text-on-primary font-label-lg text-label-lg flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm hover:bg-primary-container" type="button">
+<span>Далі</span>
+<span class="material-symbols-outlined text-base" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</footer>
+</main>
+</body></html>

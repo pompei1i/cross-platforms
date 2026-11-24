@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">Quotely</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_back">Back</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_get_started">Get started</string>
+    <string name="onboarding_page_counter">%1$d of %2$d</string>
+
+    <string name="onboarding_welcome_title">Welcome to Quotely</string>
+    <string name="onboarding_welcome_text">Discover timeless wisdom, profound thoughts and daily inspiration curated for your quiet moments.</string>
+    <string name="onboarding_explore_title">Explore the collection</string>
+    <string name="onboarding_explore_text">Browse quotes, search by author and discover the words that resonate with you.</string>
+    <string name="onboarding_random_title">Quote of the moment</string>
+    <string name="onboarding_random_text">Not sure where to start? One tap gives you a random quote for a spark of inspiration.</string>
+    <string name="onboarding_favorites_title">Keep your favourites</string>
+    <string name="onboarding_favorites_text">Save the quotes you love and come back to them whenever you need them.</string>
+
+    <string name="onboarding_daily_insight">Daily insight</string>
+    <string name="onboarding_sample_quote">“The only way to do great work is to love what you do.”</string>
+    <string name="onboarding_sample_author">Steve Jobs</string>
+
+    <string name="onboarding_tag_stoicism">Stoicism</string>
+    <string name="onboarding_tag_poetry">Poetry</string>
+    <string name="onboarding_tag_existentialism">Existentialism</string>
+
+    <string name="onboarding_saved_quote">“We read to know we are not alone.”</string>
+    <string name="onboarding_saved_caption">C.S. Lewis • Added to favourites</string>
+
+    <!-- Home -->
+    <string name="home_title">Quotely</string>
+    <string name="home_subtitle">Daily thoughts &amp; wisdom</string>
+    <string name="home_coming_soon">Coming soon</string>
+    <string name="home_placeholder_title">Quotes are on their way</string>
+    <string name="home_placeholder_text">Inspiring thoughts from dummyjson.com/quotes will fill your daily library in the next lab.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_subtitle">Preferences &amp; appearance</string>
+    <string name="settings_language">Language</string>
+    <string name="settings_theme">Theme</string>
+    <string name="settings_theme_system">System</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_show_onboarding">Show onboarding again</string>
+
+    <string name="language_en">English</string>
+    <string name="language_uk">Українська</string>
+</resources>

@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">Quotely</string>
+
+    <!-- Онбординг -->
+    <string name="onboarding_skip">Пропустити</string>
+    <string name="onboarding_back">Назад</string>
+    <string name="onboarding_next">Далі</string>
+    <string name="onboarding_get_started">Почати</string>
+    <string name="onboarding_page_counter">%1$d з %2$d</string>
+
+    <string name="onboarding_welcome_title">Ласкаво просимо до Quotely</string>
+    <string name="onboarding_welcome_text">Відкрийте для себе вічну мудрість, глибокі думки та щоденне натхнення для хвилин тихого роздуму.</string>
+    <string name="onboarding_explore_title">Досліджуйте колекцію</string>
+    <string name="onboarding_explore_text">Гортайте цитати, шукайте за автором і відкривайте слова, що відгукуються саме вам.</string>
+    <string name="onboarding_random_title">Цитата моменту</string>
+    <string name="onboarding_random_text">Не знаєте, з чого почати? Один дотик — і випадкова цитата подарує вам натхнення.</string>
+    <string name="onboarding_favorites_title">Зберігайте улюблене</string>
+    <string name="onboarding_favorites_text">Додавайте цитати до улюблених і повертайтеся до них будь-коли.</string>
+
+    <string name="onboarding_daily_insight">Щоденна мудрість</string>
+    <string name="onboarding_sample_quote">«Єдиний спосіб робити велику роботу — любити те, що ви робите.»</string>
+    <string name="onboarding_sample_author">Стів Джобс</string>
+
+    <string name="onboarding_tag_stoicism">Стоїцизм</string>
+    <string name="onboarding_tag_poetry">Поезія</string>
+    <string name="onboarding_tag_existentialism">Екзистенціалізм</string>
+
+    <string name="onboarding_saved_quote">«Ми читаємо, щоб знати, що ми не самотні.»</string>
+    <string name="onboarding_saved_caption">К. С. Льюїс • Додано до улюблених</string>
+
+    <!-- Головний екран -->
+    <string name="home_title">Quotely</string>
+    <string name="home_subtitle">Щоденні думки та мудрість</string>
+    <string name="home_coming_soon">Незабаром</string>
+    <string name="home_placeholder_title">Цитати вже в дорозі</string>
+    <string name="home_placeholder_text">Надихаючі думки з dummyjson.com/quotes заповнять вашу бібліотеку в наступній лабораторній.</string>
+
+    <!-- Налаштування -->
+    <string name="settings_title">Налаштування</string>
+    <string name="settings_subtitle">Уподобання та вигляд</string>
+    <string name="settings_language">Мова</string>
+    <string name="settings_theme">Тема</string>
+    <string name="settings_theme_system">Системна</string>
+    <string name="settings_theme_light">Світла</string>
+    <string name="settings_theme_dark">Темна</string>
+    <string name="settings_show_onboarding">Показати знайомство ще раз</string>
+
+    <string name="language_en">English</string>
+    <string name="language_uk">Українська</string>
+</resources>
